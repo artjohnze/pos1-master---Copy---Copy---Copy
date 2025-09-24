@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 27, 2025 at 04:38 AM
+-- Generation Time: Sep 24, 2025 at 10:27 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -77,13 +77,6 @@ CREATE TABLE `products` (
   `date_arrival` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Dumping data for table `products`
---
-
-INSERT INTO `products` (`product_id`, `product_code`, `gen_name`, `product_name`, `cost`, `o_price`, `price`, `profit`, `supplier`, `onhand_qty`, `qty`, `qty_sold`, `expiry_date`, `date_arrival`) VALUES
-(1, 'WY00', 'qjsaj', 'baby', '', '70', '100', '30', 'art', 0, 0, 2, '2025-08-01', '');
-
 -- --------------------------------------------------------
 
 --
@@ -131,14 +124,6 @@ CREATE TABLE `sales` (
   `balance` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Dumping data for table `sales`
---
-
-INSERT INTO `sales` (`transaction_id`, `invoice_number`, `cashier`, `date`, `type`, `amount`, `profit`, `due_date`, `name`, `balance`) VALUES
-(1, '02362330', 'Admin', '08/26/25', 'cash', '100', '30', '200', 'EDE', ''),
-(2, '22232', 'Admin', '08/26/25', 'cash', '100', '30', '100', 'DEWGHUISED', '');
-
 -- --------------------------------------------------------
 
 --
@@ -160,14 +145,6 @@ CREATE TABLE `sales_order` (
   `date` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Dumping data for table `sales_order`
---
-
-INSERT INTO `sales_order` (`transaction_id`, `invoice`, `product`, `qty`, `amount`, `profit`, `product_code`, `gen_name`, `name`, `price`, `discount`, `date`) VALUES
-(0, '02362330', '1', '1', '100', '30', 'WY00', 'qjsaj', 'baby', '100', '', '08/26/25'),
-(0, '22232', '1', '1', '100', '30', 'WY00', 'qjsaj', 'baby', '100', '', '08/26/25');
-
 -- --------------------------------------------------------
 
 --
@@ -188,7 +165,7 @@ CREATE TABLE `supliers` (
 --
 
 INSERT INTO `supliers` (`suplier_id`, `suplier_name`, `suplier_address`, `suplier_contact`, `contact_person`, `note`) VALUES
-(1, 'art', 'art', 'sir admin', '666', 'asxXS');
+(1, 'supplier 1', 'Cauayan city', '09076364645', '', 'delivered');
 
 -- --------------------------------------------------------
 
@@ -210,9 +187,10 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `username`, `password`, `name`, `position`) VALUES
 (1, 'admin', 'admin', 'Admin', 'admin'),
-(2, 'cashier', 'cashier', 'Cashier Pharmacy', 'Cashier'),
+(2, 'cashier', 'cashier', 'Cashier', 'admin'),
 (3, 'admin', 'admin123', 'Administrator', 'admin'),
-(4, 'art', 'art', 'Admin', 'admin');
+(4, 'art', 'art', 'Admin', 'admin'),
+(5, 'admin', 'admin1', 'Cashier', 'admin');
 
 --
 -- Indexes for dumped tables
@@ -286,7 +264,7 @@ ALTER TABLE `customer`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `purchases`
@@ -304,7 +282,7 @@ ALTER TABLE `purchases_item`
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `supliers`
@@ -316,7 +294,7 @@ ALTER TABLE `supliers`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
