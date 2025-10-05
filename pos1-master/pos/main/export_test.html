@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Export Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Export Test Page</h2>
+    <p>Click these buttons to test the export functionality:</p>
+
+    <a href="export_excel.php" class="btn btn-success" target="_blank">Test Excel Export</a>
+    <a href="export_pdf.php" class="btn btn-danger" target="_blank">Test PDF Export</a>
+    <a href="test_exports.php" class="btn btn-info" target="_blank">Test Database Connection</a>
+
+    <hr>
+    <h3>JavaScript Test Buttons:</h3>
+    <button class="btn btn-success" onclick="testExcel()">JS Excel Export</button>
+    <button class="btn btn-danger" onclick="testPDF()">JS PDF Export</button>
+
+    <script>
+        function testExcel() {
+            console.log('Testing Excel export...');
+            try {
+                var win = window.open('export_excel.php', '_blank');
+                if (!win) {
+                    alert('Pop-up blocked or export failed!');
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        function testPDF() {
+            console.log('Testing PDF export...');
+            try {
+                var win = window.open('export_pdf.php', '_blank');
+                if (!win) {
+                    alert('Pop-up blocked or export failed!');
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+    </script>
+</body>
+
+</html>

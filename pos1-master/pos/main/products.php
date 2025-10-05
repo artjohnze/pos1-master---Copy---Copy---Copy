@@ -32,6 +32,8 @@
     <link href="src/facebox.css" media="screen" rel="stylesheet" type="text/css" />
     <script src="lib/jquery.js" type="text/javascript"></script>
     <script src="src/facebox.js" type="text/javascript"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             $('a[rel*=facebox]').facebox({

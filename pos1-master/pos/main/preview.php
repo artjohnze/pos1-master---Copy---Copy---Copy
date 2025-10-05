@@ -173,7 +173,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                         <li class="active"><a href="sales.php?id=cash&invoice"><i
                                     class="icon-shopping-cart icon-2x"></i> Sales</a> </li>
                         <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a> </li>
-                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>
+                        <!-- <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li> -->
                         <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
@@ -293,13 +293,24 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                                 style="font-size: 12px;">Total: &nbsp;</strong></td>
                                         <td colspan="2"><strong style="font-size: 12px;">
                                                 <?php
-                                                $sdsd = $_GET['invoice'];
-                                                $resultas = $db->prepare("SELECT sum(amount) FROM sales_order WHERE invoice= :a");
-                                                $resultas->bindParam(':a', $sdsd);
-                                                $resultas->execute();
-                                                for ($i = 0; $rowas = $resultas->fetch(); $i++) {
-                                                    $fgfg = $rowas['sum(amount)'];
+                                                // Use total from URL parameter if available, otherwise calculate from database
+                                                if ($total_amount > 0) {
+                                                    echo formatMoney($total_amount, true);
+                                                } else {
+                                                    $sdsd = $_GET['invoice'];
+                                                    $resultas = $db->prepare("SELECT sum(amount) FROM sales_order WHERE invoice= :a");
+                                                    $resultas->bindParam(':a', $sdsd);
+                                                    $resultas->execute();
+                                                    $rowas = $resultas->fetch();
+                                                    $fgfg = $rowas['sum(amount)'] ?? 0;
                                                     echo formatMoney($fgfg, true);
+                                                    // Update total_amount for change calculation
+                                                    if ($total_amount == 0) {
+                                                        $total_amount = $fgfg;
+                                                        if ($cash_tendered > 0 && $change_amount == 0) {
+                                                            $change_amount = $cash_tendered - $total_amount;
+                                                        }
+                                                    }
                                                 }
                                                 ?>
                                             </strong></td>

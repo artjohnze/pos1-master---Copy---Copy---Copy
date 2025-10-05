@@ -57,12 +57,8 @@
 					return false;
 				}
 
-				// If payment is enough, redirect to preview page to print the receipt
-				var change = cashAmount - totalAmount;
-				if (change >= 0) {
-					window.location.href = "preview.php?invoice=<?php echo $_GET['invoice']; ?>&total=<?php echo $_GET['total']; ?>&cash=" + cashAmount + "&change=" + change.toFixed(2) + "&cashier=<?php echo $_GET['cashier']; ?>";
-					return false;
-				}
+				// If payment is valid, allow form submission to savesales.php
+				return true;
 			}
 			return true;
 		}
@@ -155,7 +151,6 @@
 			<input type="hidden" name="amount" value="<?php echo $_GET['total']; ?>" />
 			<input type="hidden" name="ptype" value="<?php echo $_GET['pt']; ?>" />
 			<input type="hidden" name="cashier" value="<?php echo $_GET['cashier']; ?>" />
-			<input type="hidden" name="profit" value="<?php echo $_GET['totalprof']; ?>" />
 			<center>
 
 

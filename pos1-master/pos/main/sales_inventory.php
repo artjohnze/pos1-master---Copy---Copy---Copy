@@ -51,26 +51,36 @@
             docprint.focus();
         }
 
-        function printAllRecords() {
-            // Open current page with print parameter to load ALL ROWS from database
-            var currentUrl = window.location.href;
-            // Remove existing page parameter and add print=all
-            var baseUrl = currentUrl.split('?')[0];
-            var printUrl = baseUrl + '?print=all';
 
-            console.log('Printing ALL ROWS from URL: ' + printUrl);
 
-            var disp_setting = "toolbar=yes,location=no,directories=yes,menubar=yes,";
-            disp_setting += "scrollbars=yes,width=1000, height=700, left=50, top=50";
+        function exportToExcel() {
+            console.log('Exporting ALL ROWS to Excel...');
 
-            var printWindow = window.open(printUrl, "PrintAllRecords", disp_setting);
+            try {
+                // Use separate export file for Excel
+                var excelWindow = window.open('export_excel.php', '_blank');
+                if (!excelWindow || excelWindow.closed || typeof excelWindow.closed == 'undefined') {
+                    alert('Pop-up blocked! Please allow pop-ups for this site and try again.');
+                }
+            } catch (e) {
+                console.error('Excel export error:', e);
+                alert('Excel export failed: ' + e.message);
+            }
+        }
 
-            // Wait for the page to load, then print
-            printWindow.onload = function() {
-                setTimeout(function() {
-                    printWindow.print();
-                }, 1500);
-            };
+        function exportToPDF() {
+            console.log('Exporting ALL ROWS to PDF...');
+
+            try {
+                // Use separate export file for PDF
+                var pdfWindow = window.open('export_pdf.php', '_blank');
+                if (!pdfWindow || pdfWindow.closed || typeof pdfWindow.closed == 'undefined') {
+                    alert('Pop-up blocked! Please allow pop-ups for this site and try again.');
+                }
+            } catch (e) {
+                console.error('PDF export error:', e);
+                alert('PDF export failed: ' + e.message);
+            }
         }
     </script>
 
@@ -182,23 +192,33 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 <a href="index.php"><button class="btn btn-default btn-large" style="float: left;"><i
                             class="icon icon-circle-arrow-left icon-large"></i> Back</button></a>
 
-                <br>
+                <div style="float: right; margin-bottom: 10px;">
+                    <button class="btn btn-success btn-large" onclick="exportToExcel()" style="margin-right: 10px;">
+                        <i class="icon-download"></i> Export to Excel
+                    </button>
+                    <button class="btn btn-danger btn-large" onclick="exportToPDF()">
+                        <i class="icon-file-text"></i> Export to PDF
+                    </button>
+                </div>
+
+                <div style="clear: both;"></div>
                 <br>
                 <br>
 
 
                 <?php
-                // Pagination settings
-                $records_per_page = 15;
-                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-                $offset = ($page - 1) * $records_per_page;
+                // Pagination settings - Configure how many records to show per page
+                // Show 10 rows per page
+                $records_per_page = 10; // Show 10 rows per page
+                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Get current page number or default to 1
+                $offset = ($page - 1) * $records_per_page; // Calculate offset for database query
 
-                // Get total number of records
+                // Get total number of records from sales_order table
                 include('../connect.php');
                 $total_result = $db->prepare("SELECT COUNT(*) FROM sales_order");
                 $total_result->execute();
-                $total_records = $total_result->fetchColumn();
-                $total_pages = ceil($total_records / $records_per_page);
+                $total_records = $total_result->fetchColumn(); // Total number of sales records
+                $total_pages = ceil($total_records / $records_per_page); // Calculate total pages needed
                 ?>
 
                 <input type="text" style="padding:15px;" name="filter" value="" id="filter" placeholder="Search here..."
@@ -219,7 +239,6 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                 <th> QTY </th>
 
                                 <th width="8%"> Total Amount </th>
-                                <th width="8%"> Profit </th>
 
                                 <th> Action </th>
                             </tr>
@@ -227,11 +246,15 @@ and get more free JavaScript, CSS and DHTML scripts! */
                         <tbody>
 
                             <?php
+                            // Function to format numbers as money with commas
+                            // Example: 1234.56 becomes 1,234.56
                             function formatMoney($number, $fractional = false)
                             {
+                                // Add decimal places if fractional is true
                                 if ($fractional) {
                                     $number = sprintf('%.2f', $number);
                                 }
+                                // Add commas as thousand separators
                                 while (true) {
                                     $replaced = preg_replace('/(-?\d+)(\d\d\d)/', '$1,$2', $number);
                                     if ($replaced != $number) {
@@ -243,50 +266,59 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                 return $number;
                             }
 
-                            // For print: get ALL ROWS from database, for display: get paginated records
+                            // Database query logic - Handle both pagination and print-all scenarios
                             if (isset($_GET['print']) && $_GET['print'] == 'all') {
                                 // Get ALL ROWS from database for printing (no pagination)
+                                // Order by transaction_id DESC to show newest records first (5,4,3,2,1)
                                 $result = $db->prepare("SELECT * FROM sales_order ORDER BY transaction_id DESC");
                                 $result->execute();
-                                // Debug: Count total rows being loaded
                                 $all_records_count = $result->rowCount();
                             } else {
-                                // Get paginated records for display
+                                // Get paginated records for display (only 10 records per page)
+                                // Order by transaction_id DESC to show newest records first (5,4,3,2,1)
                                 $result = $db->prepare("SELECT * FROM sales_order ORDER BY transaction_id DESC LIMIT :limit OFFSET :offset");
                                 $result->bindParam(':limit', $records_per_page, PDO::PARAM_INT);
                                 $result->bindParam(':offset', $offset, PDO::PARAM_INT);
                                 $result->execute();
                             }
 
+                            // Loop through each sales record and create table rows
+                            // This displays each transaction with all its details
                             for ($i = 0; $row = $result->fetch(); $i++) {
                             ?>
                                 <tr class="record">
+                                    <!-- Display invoice number -->
                                     <td><?php echo $row['invoice']; ?></td>
+                                    <!-- Display transaction date -->
                                     <td><?php echo $row['date']; ?></td>
+                                    <!-- Display product brand name -->
                                     <td><?php echo $row['product_code']; ?></td>
+                                    <!-- Display product generic name -->
                                     <td><?php echo $row['gen_name']; ?></td>
+                                    <!-- Get and display product description from products table -->
                                     <td><?php
-                                        // Get product description from products table
+                                        // Get product description from products table using product_id
                                         $product_id = $row['product'];
                                         $desc_result = $db->prepare("SELECT product_name FROM products WHERE product_id = :id");
                                         $desc_result->bindParam(':id', $product_id);
                                         $desc_result->execute();
                                         $desc_row = $desc_result->fetch();
-                                        echo $desc_row ? $desc_row['product_name'] : 'N/A';
+                                        echo $desc_row ? $desc_row['product_name'] : 'N/A'; // Show 'N/A' if no description found
                                         ?></td>
+                                    <!-- Display formatted price -->
                                     <td><?php
                                         $price = $row['price'];
-                                        echo formatMoney($price, true);
+                                        // Format price with commas and decimals
+                                        echo formatMoney($price, true); // Format price with commas and decimals
                                         ?></td>
+                                    <!-- Display quantity sold -->
                                     <td><?php echo $row['qty']; ?></td>
+                                    <!-- Display formatted total amount -->
                                     <td><?php
                                         $oprice = $row['amount'];
-                                        echo formatMoney($oprice, true);
+                                        echo formatMoney($oprice, true); // Format amount with commas and decimals
                                         ?></td>
-                                    <td><?php
-                                        $pprice = $row['profit'];
-                                        echo formatMoney($pprice, true);
-                                        ?></td>
+                                    <!-- Show Return button only when not printing -->
                                     <?php if (!isset($_GET['print']) || $_GET['print'] != 'all'): ?>
                                         <td>
                                             <a href="index.php"><button
@@ -301,45 +333,27 @@ and get more free JavaScript, CSS and DHTML scripts! */
 
 
 
+                            <!-- Total Amount Row - Calculate and display sum of all sales -->
                             <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th>Total Amount</th>
-                                <th>Total Profit</th>
-                                <th></th>
-                            </tr>
-
-                            <tr>
-                                <th colspan="7"><strong style="font-size: 20px; color: #222222;">Total:</strong></th>
-                                <th colspan="1"><strong style="font-size: 13px; color: #222222;">
+                                <!-- Span across 7 columns and right-align the label -->
+                                <th colspan="7" style="text-align: right;"><strong style="font-size: 20px; color: #222222;">Total Amount:</strong></th>
+                                <!-- Display the calculated total amount -->
+                                <th><strong style="font-size: 13px; color: #222222;">
                                         <?php
+                                        // Calculate sum of all amounts in sales_order table
                                         $resultas = $db->prepare("SELECT sum(amount) from sales_order");
                                         $resultas->execute();
                                         for ($i = 0; $rowas = $resultas->fetch(); $i++) {
-                                            $fgfg = $rowas['sum(amount)'];
-                                            echo formatMoney($fgfg, true);
+                                            $fgfg = $rowas['sum(amount)']; // Get total sum
+                                            echo formatMoney($fgfg, true); // Format total with commas and decimals
                                         }
                                         ?>
                                     </strong></th>
-                                <th colspan="1"><strong style="font-size: 13px; color: #222222;">
-                                        <?php
-                                        $resultas = $db->prepare("SELECT sum(profit) from sales_order");
-                                        $resultas->execute();
-                                        for ($i = 0; $rowas = $resultas->fetch(); $i++) {
-                                            $fgfg = $rowas['sum(profit)'];
-                                            echo formatMoney($fgfg, true);
-                                        }
-                                        ?>
-
-                                </th>
-
+                                <!-- Empty cell for Action column -->
                                 <th></th>
                             </tr>
+
+
 
 
 
@@ -398,24 +412,18 @@ and get more free JavaScript, CSS and DHTML scripts! */
 
 
             $(".delbutton").click(function() {
-
                 //Save the link in a variable called element
                 var element = $(this);
-
                 //Find the id of the link that was clicked
                 var del_id = element.attr("id");
-
                 //Built a url to send
                 var info = 'id=' + del_id;
                 if (confirm("Sure you want to delete this update? There is NO undo!")) {
-
                     $.ajax({
                         type: "GET",
                         url: "deletesalesinventory.php",
                         data: info,
-                        success: function() {
-
-                        }
+                        success: function() {}
                     });
                     $(this).parents(".record").animate({
                             backgroundColor: "#fbc7c7"
@@ -423,13 +431,9 @@ and get more free JavaScript, CSS and DHTML scripts! */
                         .animate({
                             opacity: "hide"
                         }, "slow");
-
                 }
-
                 return false;
-
             });
-
         });
     </script>
 </body>

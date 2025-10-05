@@ -17,13 +17,11 @@
 		<span>Expiry Date : </span><input type="date" style="width:265px; height:30px;" name="exdate" id="expiryDate" required /><br>
 		<div id="expiryDateError" style="color: red; font-size: 12px; margin-left: 95px; display: none;">Expiry Date is required</div>
 
-		<span>Selling Price : </span><input type="text" id="txt1" style="width:265px; height:30px;" name="price" onkeyup="sum();" required /><br>
+		<span>Selling Price : </span><input type="text" id="txt1" style="width:265px; height:30px;" name="price" required /><br>
 		<div id="sellingPriceError" style="color: red; font-size: 12px; margin-left: 95px; display: none;">Selling Price is required</div>
 
-		<span>Original Price : </span><input type="text" id="txt2" style="width:265px; height:30px;" name="o_price" onkeyup="sum();" required /><br>
+		<span>Original Price : </span><input type="text" id="txt2" style="width:265px; height:30px;" name="o_price" required /><br>
 		<div id="originalPriceError" style="color: red; font-size: 12px; margin-left: 95px; display: none;">Original Price is required</div>
-
-		<span>Profit : </span><input type="text" id="txt3" style="width:265px; height:30px;" name="profit" readonly><br>
 		<span>Supplier : </span>
 		<select name="supplier" style="width:265px; height:30px;" id="supplier" required>
 			<option value="">Select Supplier</option>
@@ -41,7 +39,7 @@
 		</select><br>
 		<div id="supplierError" style="color: red; font-size: 12px; margin-left: 95px; display: none;">Please select a supplier</div>
 
-		<span>Quantity : </span><input type="number" style="width:265px; height:30px;" id="txt4" name="qty" onkeyup="sum();" required min="0" /><br>
+		<span>Quantity : </span><input type="number" style="width:265px; height:30px;" id="txt4" name="qty" required min="0" /><br>
 		<div id="quantityError" style="color: red; font-size: 12px; margin-left: 95px; display: none;">Quantity is required and must be 0 or greater</div>
 
 		<div style="float:right; margin-right:10px;">

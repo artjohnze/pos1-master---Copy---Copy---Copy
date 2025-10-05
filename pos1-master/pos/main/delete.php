@@ -8,15 +8,8 @@ $sdsd = $_GET['dle'];
 $qty = $_GET['qty'];
 $wapak = $_GET['code'];
 
-// Restore product quantity first
-$sql = "UPDATE products SET qty=qty+:qty WHERE product_id=:wapak";
-$q = $db->prepare($sql);
-$q->bindParam(':qty', $qty);
-$q->bindParam(':wapak', $wapak);
-$q->execute();
-
-// Delete the item from sales_order
-$result = $db->prepare("DELETE FROM sales_order WHERE transaction_id= :memid");
+// Delete the item from temporary_cart (no need to restore inventory since it wasn't deducted yet)
+$result = $db->prepare("DELETE FROM temporary_cart WHERE transaction_id= :memid");
 $result->bindParam(':memid', $id);
 $result->execute();
 

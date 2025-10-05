@@ -160,7 +160,6 @@ $finalcode = 'RS-' . createRandomPassword();
 								<th width="13%"> Transaction Date </th>
 								<th width="16%"> Invoice Number </th>
 								<th width="18%"> Amount </th>
-								<th width="13%"> Profit </th>
 							</tr>
 						</thead>
 						<tbody>
@@ -214,10 +213,6 @@ $finalcode = 'RS-' . createRandomPassword();
 										$dsdsd = $row['amount'];
 										echo formatMoney($dsdsd, true);
 										?></td>
-									<td><?php
-										$zxc = $row['profit'];
-										echo formatMoney($zxc, true);
-										?></td>
 								</tr>
 							<?php
 							}
@@ -226,7 +221,7 @@ $finalcode = 'RS-' . createRandomPassword();
 							if ($recordCount == 0) {
 							?>
 								<tr>
-									<td colspan="5" style="text-align: center; color: #999; padding: 20px;">
+									<td colspan="4" style="text-align: center; color: #999; padding: 20px;">
 										<em>No sales records found. Please make sure there are sales transactions in the database.</em>
 									</td>
 								</tr>
@@ -255,23 +250,6 @@ $finalcode = 'RS-' . createRandomPassword();
 									for ($i = 0; $rows = $results->fetch(); $i++) {
 										$dsdsd = $rows['sum(amount)'];
 										echo formatMoney($dsdsd, true);
-									}
-									?>
-								</th>
-								<th colspan="1" style="border-top:1px solid #999999">
-									<?php
-									if (isset($_GET['d1']) && isset($_GET['d2']) && $_GET['d1'] != '' && $_GET['d2'] != '' && $_GET['d1'] != '0' && $_GET['d2'] != '0') {
-										$resultia = $db->prepare("SELECT sum(profit) FROM sales WHERE date BETWEEN :c AND :d");
-										$resultia->bindParam(':c', $d1);
-										$resultia->bindParam(':d', $d2);
-									} else {
-										$resultia = $db->prepare("SELECT sum(profit) FROM sales");
-									}
-
-									$resultia->execute();
-									for ($i = 0; $cxz = $resultia->fetch(); $i++) {
-										$zxc = $cxz['sum(profit)'];
-										echo formatMoney($zxc, true);
 									}
 									?>
 								</th>

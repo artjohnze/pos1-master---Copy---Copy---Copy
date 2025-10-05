@@ -46,7 +46,7 @@
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script type="module" src="sweet.js"></script>
     <!-- Handle success messages with SweetAlert -->
     <script>
         $(document).ready(function() {
@@ -62,6 +62,39 @@
                 });
                 // Clean up URL
                 urlParams.delete('success');
+                var cleanUrl = window.location.pathname + '?' + urlParams.toString();
+                if (cleanUrl.endsWith('?')) cleanUrl = cleanUrl.slice(0, -1);
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+
+            // Check for error parameters
+            if (urlParams.has('error')) {
+                var errorType = urlParams.get('error');
+                var errorMessage = '';
+
+                switch (errorType) {
+                    case 'insufficient_stock':
+                        errorMessage = 'Not enough stock available for this quantity!';
+                        break;
+                    case 'product_not_found':
+                        errorMessage = 'Product not found!';
+                        break;
+                    case 'checkout_failed':
+                        errorMessage = 'Checkout failed. Please try again!';
+                        break;
+                    default:
+                        errorMessage = 'An error occurred. Please try again!';
+                }
+
+                Swal.fire({
+                    title: 'Error!',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonColor: '#d33'
+                });
+
+                // Clean up URL
+                urlParams.delete('error');
                 var cleanUrl = window.location.pathname + '?' + urlParams.toString();
                 if (cleanUrl.endsWith('?')) cleanUrl = cleanUrl.slice(0, -1);
                 window.history.replaceState({}, document.title, cleanUrl);
@@ -125,7 +158,7 @@ function createRandomPassword()
     }
     return $pass;
 }
-$finalcode = '-' . createRandomPassword();
+$finalcode = '' . createRandomPassword();
 ?>
 
 <body>
@@ -235,7 +268,6 @@ $finalcode = '-' . createRandomPassword();
                                 <th> Price </th>
                                 <th> Qty </th>
                                 <th> Amount </th>
-                                <th> Profit </th>
                                 <th> Action </th>
                             </tr>
                         </thead>
@@ -244,7 +276,26 @@ $finalcode = '-' . createRandomPassword();
                             <?php
                             $id = $_GET['invoice'];
                             include('../connect.php');
-                            $result = $db->prepare("SELECT * FROM sales_order WHERE invoice= :userid");
+
+                            // Create temporary_cart table if it doesn't exist
+                            $create_temp_table = "CREATE TABLE IF NOT EXISTS temporary_cart (
+                                transaction_id int(11) NOT NULL AUTO_INCREMENT,
+                                invoice varchar(100) NOT NULL,
+                                product varchar(100) NOT NULL,
+                                qty varchar(100) NOT NULL,
+                                amount varchar(100) NOT NULL,
+                                product_code varchar(150) NOT NULL,
+                                gen_name varchar(200) NOT NULL,
+                                price varchar(100) NOT NULL,
+                                discount varchar(100) NOT NULL,
+                                date varchar(500) NOT NULL,
+                                session_id varchar(100) NOT NULL,
+                                PRIMARY KEY (transaction_id)
+                            ) ENGINE=InnoDB DEFAULT CHARSET=latin1";
+                            $db->exec($create_temp_table);
+
+                            // Read from temporary cart instead of sales_order for pending sales
+                            $result = $db->prepare("SELECT * FROM temporary_cart WHERE invoice= :userid");
                             $result->bindParam(':userid', $id);
                             $result->execute();
                             for ($i = 1; $row = $result->fetch(); $i++) {
@@ -275,12 +326,6 @@ $finalcode = '-' . createRandomPassword();
                                         echo formatMoney($dfdf, true);
                                         ?>
                                     </td>
-                                    <td>
-                                        <?php
-                                        $profit = $row['profit'];
-                                        echo formatMoney($profit, true);
-                                        ?>
-                                    </td>
                                     <td width="90">
                                         <button class="btn btn-m+ini btn-warning delete-item"
                                             data-id="<?php echo $row['transaction_id']; ?>"
@@ -302,12 +347,11 @@ $finalcode = '-' . createRandomPassword();
                                 <th> </th>
                                 <th> </th>
                                 <th> </th>
-                                <td> Total Amount: </td>
-                                <td> Total Profit: </td>
+
                                 <th> </th>
                             </tr>
                             <tr>
-                                <th colspan="5"><strong style="font-size: 12px; color: #222222;">Total:</strong></th>
+                                <th colspan="4"><strong style="font-size: 12px; color: #222222;">Total:</strong></th>
                                 <td colspan="1"><strong style="font-size: 12px; color: #222222;">
                                         <?php
                                         function formatMoney($number, $fractional = false)
@@ -327,7 +371,7 @@ $finalcode = '-' . createRandomPassword();
                                         }
                                         $sdsd = $_GET['invoice'];
                                         $sdsd = $_GET['invoice'];
-                                        $resultas = $db->prepare("SELECT sum(amount) as total_amount FROM sales_order WHERE invoice= :a");
+                                        $resultas = $db->prepare("SELECT sum(amount) as total_amount FROM temporary_cart WHERE invoice= :a");
                                         $resultas->bindParam(':a', $sdsd);
                                         $resultas->execute();
                                         $rowas = $resultas->fetch();
@@ -335,17 +379,6 @@ $finalcode = '-' . createRandomPassword();
                                         echo formatMoney($fgfg, true);
                                         ?>
                                     </strong></td>
-                                <td colspan="1"><strong style="font-size: 12px; color: #222222;">
-                                        <?php
-                                        $resulta = $db->prepare("SELECT sum(profit) as total_profit FROM sales_order WHERE invoice= :b");
-                                        $resulta->bindParam(':b', $sdsd);
-                                        $resulta->execute();
-                                        $qwe = $resulta->fetch();
-                                        $asd = isset($qwe['total_profit']) ? $qwe['total_profit'] : 0;
-                                        echo formatMoney($asd, true);
-                                        ?>
-
-                                </td>
                                 <th></th>
                             </tr>
                         </tbody>
@@ -354,7 +387,7 @@ $finalcode = '-' . createRandomPassword();
                     <!-- Save button - disabled when cart is empty -->
                     <?php if ($fgfg > 0) { ?>
                         <a rel="facebox"
-                            href="checkout.php?pt=<?php echo $_GET['id'] ?>&invoice=<?php echo $_GET['invoice'] ?>&total=<?php echo $fgfg ?>&totalprof=<?php echo $asd ?>&cashier=<?php echo $_SESSION['SESS_FIRST_NAME'] ?>">
+                            href="checkout.php?pt=<?php echo $_GET['id'] ?>&invoice=<?php echo $_GET['invoice'] ?>&total=<?php echo $fgfg ?>&cashier=<?php echo $_SESSION['SESS_FIRST_NAME'] ?>">
                             <button class="btn btn-success btn-large btn-block">
                                 <i class="icon icon-save icon-large"></i> SAVE
                             </button>
