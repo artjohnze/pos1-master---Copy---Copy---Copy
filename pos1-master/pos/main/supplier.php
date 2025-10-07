@@ -113,6 +113,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                     class="icon-shopping-cart icon-2x"></i> Sales</a> </li>
                         <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a> </li>
                         <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>-->
+                        <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li class="active"><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
@@ -201,7 +202,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                 <td><?php echo $row['note']; ?></td>
                                 <td><a rel="facebox" href="editsupplier.php?id=<?php echo $row['suplier_id']; ?>"><button
                                             class="btn btn-warning btn-mini"><i></i>Update </button></a>
-                                    <a href="index.php" title="Back to Dashboard"><button class="btn btn-primary btn-mini"><i></i>Return</button></a>
+
                                 </td>
                             </tr>
                         <?php

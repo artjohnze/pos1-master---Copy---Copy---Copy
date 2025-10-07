@@ -50,38 +50,6 @@
             docprint.document.close();
             docprint.focus();
         }
-
-
-
-        function exportToExcel() {
-            console.log('Exporting ALL ROWS to Excel...');
-
-            try {
-                // Use separate export file for Excel
-                var excelWindow = window.open('export_excel.php', '_blank');
-                if (!excelWindow || excelWindow.closed || typeof excelWindow.closed == 'undefined') {
-                    alert('Pop-up blocked! Please allow pop-ups for this site and try again.');
-                }
-            } catch (e) {
-                console.error('Excel export error:', e);
-                alert('Excel export failed: ' + e.message);
-            }
-        }
-
-        function exportToPDF() {
-            console.log('Exporting ALL ROWS to PDF...');
-
-            try {
-                // Use separate export file for PDF
-                var pdfWindow = window.open('export_pdf.php', '_blank');
-                if (!pdfWindow || pdfWindow.closed || typeof pdfWindow.closed == 'undefined') {
-                    alert('Pop-up blocked! Please allow pop-ups for this site and try again.');
-                }
-            } catch (e) {
-                console.error('PDF export error:', e);
-                alert('PDF export failed: ' + e.message);
-            }
-        }
     </script>
 
     <script type="text/javascript">
@@ -165,6 +133,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                     class="icon-shopping-cart icon-2x"></i> Sales</a> </li>
                         <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a> </li>
                         <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>-->
+                        <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
@@ -192,14 +161,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 <a href="index.php"><button class="btn btn-default btn-large" style="float: left;"><i
                             class="icon icon-circle-arrow-left icon-large"></i> Back</button></a>
 
-                <div style="float: right; margin-bottom: 10px;">
-                    <button class="btn btn-success btn-large" onclick="exportToExcel()" style="margin-right: 10px;">
-                        <i class="icon-download"></i> Export to Excel
-                    </button>
-                    <button class="btn btn-danger btn-large" onclick="exportToPDF()">
-                        <i class="icon-file-text"></i> Export to PDF
-                    </button>
-                </div>
+
 
                 <div style="clear: both;"></div>
                 <br>
@@ -239,8 +201,6 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                 <th> QTY </th>
 
                                 <th width="8%"> Total Amount </th>
-
-                                <th> Action </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -319,13 +279,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                         echo formatMoney($oprice, true); // Format amount with commas and decimals
                                         ?></td>
                                     <!-- Show Return button only when not printing -->
-                                    <?php if (!isset($_GET['print']) || $_GET['print'] != 'all'): ?>
-                                        <td>
-                                            <a href="index.php"><button
-                                                    class="btn btn-mini btn-primary"><i></i> Return
-                                                </button></a>
-                                        </td>
-                                    <?php endif; ?>
+
                                 </tr>
                             <?php
                             }
@@ -349,8 +303,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                         }
                                         ?>
                                     </strong></th>
-                                <!-- Empty cell for Action column -->
-                                <th></th>
+
                             </tr>
 
 

@@ -148,6 +148,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                     class="icon-shopping-cart icon-2x"></i> Sales</a> </li>
                         <li class="active"><a href="products.php"><i class="icon-table icon-2x"></i> Products</a> </li>
                         <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>-->
+                        <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
@@ -215,12 +216,13 @@ and get more free JavaScript, CSS and DHTML scripts! */
                             <th> Brand Name </th>
                             <th> Generic Name </th>
                             <th> Description </th>
-                            <th> Expiry Date </th>
                             <th> Original Price </th>
                             <th> Selling Price </th>
                             <th> Supplier </th>
-                            <th width="7%"> Quantity </th>
-                            <th width="5%"> Sold </th>
+                            <th> Quantity </th>
+                            <th> Sold </th>
+                            <th> Expiry Date </th>
+                            <th> Date Arrived </th>
                             <th width="13%"> Action </th>
                         </tr>
                     </thead>
@@ -253,22 +255,21 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                 <td><?php echo $row['product_code']; ?></td>
                                 <td><?php echo $row['gen_name']; ?></td>
                                 <td><?php echo $row['product_name']; ?></td>
-                                <td><?php echo $row['expiry_date']; ?></td>
-                                <td><?php
-                                    $oprice = $row['o_price'];
-                                    echo formatMoney($oprice, true);
-                                    ?></td>
-                                <td><?php
-                                    $pprice = $row['price'];
-                                    echo formatMoney($pprice, true);
-                                    ?></td>
+                                <td><?php echo formatMoney($row['o_price'], true); ?></td>
+                                <td><?php echo formatMoney($row['price'], true); ?></td>
                                 <td><?php echo $row['supplier']; ?></td>
                                 <td><?php echo $row['qty']; ?></td>
                                 <td><?php echo $row['qty_sold']; ?></td>
-                                <td><a rel="facebox" title="Click to edit the product"
-                                        href="editproduct.php?id=<?php echo $row['product_id']; ?>"><button
-                                            class="btn btn-mini btn-warning"><i></i>Update</button> </a> <a
-                                        href="index.php" title="Back to Dashboard"><button class="btn btn-mini btn-primary"><i></i> Return</button></a></td>
+                                <td><?php echo $row['expiry_date']; ?></td>
+                                <td><?php echo date('Y-m-d H:i', strtotime($row['date_arrival'])); ?></td>
+                                <td>
+                                    <a rel="facebox" title="Click to edit the product" href="editproduct.php?id=<?php echo $row['product_id']; ?>">
+                                        <button class="btn btn-mini btn-warning"><i class="icon-edit"></i> Update</button>
+                                    </a>
+                                    <a rel="facebox" title="Return to Supplier" href="return_product.php?id=<?php echo $row['product_id']; ?>">
+                                        <button class="btn btn-mini btn-danger"><i class="icon-share"></i> Return</button>
+                                    </a>
+                                </td>
                             </tr>
                         <?php
                         }
