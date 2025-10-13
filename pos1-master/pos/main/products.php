@@ -98,8 +98,6 @@ $finalcode = '' . createRandomPassword();
 
     }
 </script>
-
-
 <script language="javascript" type="text/javascript">
     /* Visit http://www.yaldex.com/ for full source code
 and get more free JavaScript, CSS and DHTML scripts! */
@@ -144,21 +142,20 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 <div class="well sidebar-nav">
                     <ul class="nav nav-list">
                         <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
-                        <li><a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><i
-                                    class="icon-shopping-cart icon-2x"></i> Sales</a> </li>
+                        <!-- <li><a href="sales.php?id=cash&invoice=?php echo $finalcode ?>"><i
+                                    class="icon-shopping-cart icon-2x"></i> Sales</a> </li> -->
                         <li class="active"><a href="products.php"><i class="icon-table icon-2x"></i> Products</a> </li>
                         <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>-->
                         <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
+                        <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li>
+                        <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
                         <li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a>
-
                             <br><br><br><br><br><br>
                         <li>
                             <div class="hero-unit-clock">
-
-
                             </div>
                         </li>
 
@@ -171,15 +168,13 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 <div class="contentheader">
                     <i class="icon-table"></i> Products
                 </div>
-                <ul class="breadcrumb">
+                <br>
+                <!-- <ul class="breadcrumb">
                     <li><a href="index.php">Dashboard</a></li> /
                     <li class="active">Products</li>
-                </ul>
-
-
+                </ul> -->
                 <div style="margin-top: -19px; margin-bottom: 21px;">
-                    <a href="index.php"><button class="btn btn-default btn-large" style="float: left;"><i
-                                class="icon icon-circle-arrow-left icon-large"></i> Back</button></a>
+
                     <?php
                     include('../connect.php');
                     $result = $db->prepare("SELECT * FROM products ORDER BY product_id DESC");
@@ -197,26 +192,21 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 $records_per_page = 10;
                 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
                 $offset = ($page - 1) * $records_per_page;
-
                 // Get total number of records
                 $total_result = $db->prepare("SELECT COUNT(*) FROM products");
                 $total_result->execute();
                 $total_records = $total_result->fetchColumn();
                 $total_pages = ceil($total_records / $records_per_page);
                 ?>
-
                 <input type="text" style="padding:15px;" name="filter" value="" id="filter"
                     placeholder="Search Product..." autocomplete="off" />
-                <a rel="facebox" href="addproduct.php"><Button type="submit" class="btn btn-info"
-                        style="float:right; width:230px; height:35px;" /><i class="icon-plus-sign icon-large"></i> Add
-                    Product</button></a><br><br>
+                <br><br>
                 <table class="table table-bordered" id="resultTable" data-responsive="table" style="text-align: left;">
                     <thead>
                         <tr>
                             <th> Brand Name </th>
                             <th> Generic Name </th>
                             <th> Description </th>
-                            <th> Original Price </th>
                             <th> Selling Price </th>
                             <th> Supplier </th>
                             <th> Quantity </th>
@@ -227,7 +217,6 @@ and get more free JavaScript, CSS and DHTML scripts! */
                         </tr>
                     </thead>
                     <tbody>
-
                         <?php
                         function formatMoney($number, $fractional = false)
                         {
@@ -255,7 +244,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                 <td><?php echo $row['product_code']; ?></td>
                                 <td><?php echo $row['gen_name']; ?></td>
                                 <td><?php echo $row['product_name']; ?></td>
-                                <td><?php echo formatMoney($row['o_price'], true); ?></td>
+
                                 <td><?php echo formatMoney($row['price'], true); ?></td>
                                 <td><?php echo $row['supplier']; ?></td>
                                 <td><?php echo $row['qty']; ?></td>
@@ -285,7 +274,6 @@ and get more free JavaScript, CSS and DHTML scripts! */
                             <?php if ($page > 1): ?>
                                 <li><a href="?page=<?php echo $page - 1; ?>">&laquo; Previous</a></li>
                             <?php endif; ?>
-
                             <?php
                             // Show page numbers
                             for ($i = 1; $i <= $total_pages; $i++) {
@@ -296,7 +284,6 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                 }
                             }
                             ?>
-
                             <?php if ($page < $total_pages): ?>
                                 <li><a href="?page=<?php echo $page + 1; ?>">Next &raquo;</a></li>
                             <?php endif; ?>
@@ -308,7 +295,6 @@ and get more free JavaScript, CSS and DHTML scripts! */
                         of <?php echo $total_records; ?> products (Page <?php echo $page; ?> of <?php echo $total_pages; ?>)
                     </div>
                 </div>
-
                 <div class="clearfix"></div>
             </div>
         </div>

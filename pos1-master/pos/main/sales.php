@@ -14,6 +14,7 @@
             })
         })
     </script>
+
     <title>
         POS
     </title>
@@ -167,9 +168,17 @@ $finalcode = '' . createRandomPassword();
     $position = $_SESSION['SESS_LAST_NAME'];
     if ($position == 'cashier') {
     ?>
-        <a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>">Cash</a>
 
-        <a href="../index.php">Logout</a>
+        <!--/span-->
+        <div class="span10" style="width: 100%; max-width: 1400px; margin-left: 0;">
+            <div style="margin: 0 auto; width: 95%; min-width: 900px; max-width: 1400px;">
+                <!-- ...existing code for sales content... -->
+
+
+            </div>
+        </div>
+        </div>
+        </div>
     <?php
     }
     if ($position == 'admin') {
@@ -181,8 +190,8 @@ $finalcode = '' . createRandomPassword();
                     <div class="well sidebar-nav">
                         <ul class="nav nav-list">
                             <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
-                            <li class="active"><a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><i
-                                        class="icon-shopping-cart icon-2x"></i> Sales</a> </li>
+                            <!-- <li class="active"><a href="sales.php?id=cash&invoice=?php echo $finalcode ?>"><i
+                                        class="icon-shopping-cart icon-2x"></i> Sales</a> </li> -->
                             <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a> </li>
                             <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>-->
                             <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
@@ -205,23 +214,18 @@ $finalcode = '' . createRandomPassword();
                     <!--/.well -->
                 </div>
                 <!--/span-->
-                <div class="span10">
+                <div class="span10" style="width: 100%; max-width: 1460px; margin-left: 1;">
                     <div class="contentheader">
                         <i class="icon-money"></i> Sales
                     </div>
                     <ul class="breadcrumb">
-                        <a href="index.php">
-                            <li>Dashboard</li>
-                        </a>
-                        <li class="active">Sales</li>
+
                     </ul>
                     <div style="margin-top: -19px; margin-bottom: 21px;">
-                        <a href="index.php"><button class="btn btn-default btn-large" style="float: none;"><i
-                                    class="icon icon-circle-arrow-left icon-large"></i> Back</button></a>
+
                     </div>
 
                     <form action="incoming.php" method="post">
-
                         <input type="hidden" name="pt" value="<?php echo $_GET['id']; ?>" />
                         <input type="hidden" name="invoice" value="<?php echo $_GET['invoice']; ?>" />
                         <select name="product" style="width:650px;" class="chzn-select" required>

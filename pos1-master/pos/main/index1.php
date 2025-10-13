@@ -1,8 +1,3 @@
-<?php
-// DB connection
-$pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
-?>
-
 <!DOCTYPE html>
 <html>
 
@@ -10,8 +5,6 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
     <title>Sales Dashboard</title>
     <link href="css/bootstrap.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>POS - Sales Visualization</title>
-    <link href="css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/DT_bootstrap.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
@@ -20,9 +13,18 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
 
     <script src="lib/jquery.js"></script>
     <script src="src/facebox.js"></script>
-    <script src="chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container-fluid {
+            padding: 20px;
+        }
+
         .row-cards {
             display: flex;
             flex-wrap: wrap;
@@ -39,12 +41,15 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
             border-radius: 14px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             padding: 25px;
+            margin-bottom: 25px;
         }
 
-        h3 {
-            text-align: center;
+        .card h3 {
             font-size: 18px;
+            font-weight: 600;
             margin-bottom: 20px;
+            text-align: center;
+            color: #333;
         }
 
         .chart-container {
@@ -55,38 +60,6 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
         canvas {
             width: 100% !important;
             height: 400px !important;
-        }
-    </style>
-    <style>
-        .sidebar-nav {
-            padding: 9px 0;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            padding: 25px;
-            margin-bottom: 25px;
-
-        }
-
-        .card h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .row-cards {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .col-card {
-            flex: 1;
-            min-width: 400px;
         }
 
         @media (max-width: 768px) {
@@ -110,15 +83,28 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
             color: #28a745;
         }
 
-        canvas {
-            width: 100% !important;
-            height: 400px !important;
+        .dropdown {
+            margin-bottom: 20px;
         }
 
+        .dropdown select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        /* Improved Chart Colors */
         .chart-container {
-            position: relative;
-            height: 400px;
-            margin: 10px 0;
+            background-color: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+        }
+
+        .chart-container canvas {
+            border-radius: 14px;
         }
     </style>
     <?php require_once('auth.php'); ?>
@@ -156,17 +142,11 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <div class="well sidebar-nav">
                     <ul class="nav nav-list">
                         <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
-                        <!-- <li><a href="sales.php?id=cash&invoice=?php echo $finalcode ?>"><i
-                                        class="icon-shopping-cart icon-2x"></i> Sales</a></li> -->
                         <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a></li>
-                        <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a></li>-->
                         <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a></li>
                         <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li>
                         <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
-                        <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
-                        </li>
-
                         <li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a></li>
                     </ul>
                 </div>
@@ -354,29 +334,52 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                             datasets: [{
                                 label: cfg.label,
                                 data: cfg.data,
-                                backgroundColor: 'rgba(33, 199, 221, 0.7)'
+                                backgroundColor: 'rgba(33, 199, 221, 0.7)',
+                                borderColor: 'rgba(33, 199, 221, 1)',
+                                borderWidth: 1
                             }]
                         },
                         options: {
                             responsive: true,
                             scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: '#333'
+                                    }
+                                },
                                 y: {
                                     beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.1)'
+                                    },
                                     ticks: {
                                         callback: function(value) {
                                             return cfg.id === 'productChart' ? value : pesoFormat(value);
-                                        }
+                                        },
+                                        color: '#333'
                                     }
                                 }
                             },
                             plugins: {
                                 tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
                                     callbacks: {
                                         label: function(context) {
                                             return cfg.id === 'productChart' ?
                                                 context.parsed.y + ' units' :
                                                 pesoFormat(context.parsed.y);
                                         }
+                                    }
+                                },
+                                legend: {
+                                    position: 'top',
+                                    align: 'center',
+                                    labels: {
+                                        color: '#333'
                                     }
                                 }
                             }
@@ -388,10 +391,3 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
 </body>
 
 </html>
-
-
-<!-- changes the design make it responsive ui
-
-
-add also dropdown
-Today's Sales, Yesterday's Sales, Weekly Sales = Product Sales Today, Monthly Sales Yearly Sales -->

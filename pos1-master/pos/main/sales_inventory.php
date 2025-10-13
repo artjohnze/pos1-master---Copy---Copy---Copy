@@ -129,24 +129,23 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 <div class="well sidebar-nav">
                     <ul class="nav nav-list">
                         <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
-                        <li><a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><i
-                                    class="icon-shopping-cart icon-2x"></i> Sales</a> </li>
+                        <!-- <li><a href="sales.php?id=cash&invoice=?php echo $finalcode ?>"><i
+                                    class="icon-shopping-cart icon-2x"></i> Sales</a> </li> -->
                         <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a> </li>
                         <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>-->
                         <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
+                        <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li>
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
+                        <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
                         <li class="active"><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product
                                 Inventory</a> </li>
                         <br><br><br><br><br><br>
                         <li>
                             <div class="hero-unit-clock">
-
-
                             </div>
                         </li>
-
                     </ul>
                 </div>
                 <!--/.well -->
@@ -157,24 +156,13 @@ and get more free JavaScript, CSS and DHTML scripts! */
                     <i class="icon-bar-chart"></i> Product Inventory
                 </div>
                 <br>
-
-                <a href="index.php"><button class="btn btn-default btn-large" style="float: left;"><i
-                            class="icon icon-circle-arrow-left icon-large"></i> Back</button></a>
-
-
-
                 <div style="clear: both;"></div>
-                <br>
-                <br>
-
-
                 <?php
                 // Pagination settings - Configure how many records to show per page
                 // Show 10 rows per page
                 $records_per_page = 10; // Show 10 rows per page
                 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Get current page number or default to 1
                 $offset = ($page - 1) * $records_per_page; // Calculate offset for database query
-
                 // Get total number of records from sales_order table
                 include('../connect.php');
                 $total_result = $db->prepare("SELECT COUNT(*) FROM sales_order");
@@ -182,12 +170,9 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 $total_records = $total_result->fetchColumn(); // Total number of sales records
                 $total_pages = ceil($total_records / $records_per_page); // Calculate total pages needed
                 ?>
-
                 <input type="text" style="padding:15px;" name="filter" value="" id="filter" placeholder="Search here..."
                     autocomplete="off" />
                 <div class="content" id="content">
-                    <br><br><br>
-                    <center><strong>Product Inventory</strong></center>
                     <table class="table table-bordered" id="resultTable" data-responsive="table"
                         style="text-align: left;">
                         <thead>
@@ -199,7 +184,6 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                 <th width="15%"> Category / Description </th>
                                 <th> Price </th>
                                 <th> QTY </th>
-
                                 <th width="8%"> Total Amount </th>
                             </tr>
                         </thead>
