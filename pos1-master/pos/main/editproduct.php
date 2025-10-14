@@ -22,7 +22,7 @@ for ($i = 0; $row = $result->fetch(); $i++) {
 			<span>Description : </span><input type="text" style="width:265px; height:30px;" name="name" value="<?php echo $row['product_name']; ?>" /><br>
 			<span>Expiry Date : </span><input type="date" style="width:265px; height:30px;" name="exdate" value="<?php echo $row['expiry_date']; ?>" /><br>
 			<span>Selling Price : </span><input type="text" style="width:265px; height:30px;" id="txt1" name="price" value="<?php echo $row['price']; ?>" Required /><br>
-			<span>Original Price : </span><input type="text" style="width:265px; height:30px;" id="txt2" name="o_price" value="<?php echo $row['o_price']; ?>" Required /><br>
+
 			<span>Supplier : </span>
 			<select name="supplier" style="width:265px; height:30px; margin-left:-5px;">
 				<option><?php echo $row['supplier']; ?></option>

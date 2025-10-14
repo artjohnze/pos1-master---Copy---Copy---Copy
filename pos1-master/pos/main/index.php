@@ -1,7 +1,18 @@
+<?php
+// Start session and authentication first
+require_once('auth.php');
+
+// DB connection
+$pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
+?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
+    <title>Sales Dashboard</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>POS - Sales Visualization</title>
     <link href="css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/DT_bootstrap.css">
@@ -14,73 +25,88 @@
     <script src="src/facebox.js"></script>
     <script src="chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
-        .sidebar-nav {
-            padding: 9px 0;
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
         }
 
-        .card {
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            padding: 25px;
-            margin-bottom: 25px;
 
-        }
-
-        .card h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
-        }
 
         .row-cards {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 8px;
+            justify-content: center;
         }
 
         .col-card {
-            flex: 1;
-            min-width: 400px;
+            flex: 1 1 350px;
+            /* smaller min width */
+            max-width: 400px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            padding: 10px;
+            /* even smaller padding */
+            margin-bottom: 10px;
+        }
+
+        .card h2 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-align: center;
+            color: #333;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+            /* much smaller height */
+            margin: 5px 0;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 200px !important;
+            /* much smaller graph */
+        }
+
+        .total-card {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: rgb(219, 107, 15);
         }
 
         @media (max-width: 768px) {
             .col-card {
-                min-width: 100%;
+                min-width: 90%;
             }
 
             .row-cards {
                 flex-direction: column;
             }
 
-            canvas {
-                height: 350px !important;
+            .chart-container {
+                height: 180px !important;
             }
-        }
 
-        .total-card {
-            text-align: center;
-            font-size: 26px;
-            font-weight: bold;
-            color: #28a745;
-        }
-
-        canvas {
-            width: 100% !important;
-            height: 400px !important;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 400px;
-            margin: 10px 0;
+            canvas {
+                height: 180px !important;
+            }
         }
     </style>
 
-    <?php require_once('auth.php'); ?>
+    <style>
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+    </style>
     <?php
     function createRandomPassword()
     {
@@ -107,270 +133,348 @@
     if ($position == 'cashier') {
         echo '<a href="../index.php">Logout</a>';
     }
-    if ($position == 'admin') {
+
     ?>
-        <div class="container-fluid">
-            <div class="row-fluid">
-                <div class="span2">
-                    <div class="well sidebar-nav">
-                        <ul class="nav nav-list">
-                            <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
-                            <li><a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><i
-                                        class="icon-shopping-cart icon-2x"></i> Sales</a></li>
-                            <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a></li>
-                            <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a></li>-->
-                            <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
-                            <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a></li>
-                            <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
-                            </li>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span2">
+                <div class="well sidebar-nav">
+                    <ul class="nav nav-list">
+                        <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
+                        <!-- <li><a href="sales.php?id=cash&invoice=?php echo $finalcode ?>"><i
+                                        class="icon-shopping-cart icon-2x"></i> Sales</a></li> -->
+                        <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a></li>
+                        <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a></li>-->
+                        <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
+                        <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a></li>
+                        <!-- <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li> -->
+                        <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
+                        <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
+                        </li>
 
-                            <li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="span10">
-                    <div class="contentheader">
-                        <i class="icon-bar-chart"></i> Sales Visualization
-                    </div>
-                    <ul class="breadcrumb">
-                        <li class="active">Sales Visualization</li>
+                        <li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a></li>
                     </ul>
-
-                    <?php
-                    // DB connection
-                    $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
-
-                    // DAILY SALES
-                    $stmt = $pdo->prepare("
-    SELECT DATE(STR_TO_DATE(`date`, '%m/%d/%y')) as sdate,
-           SUM(amount) as total_sales
-    FROM sales_order
-    WHERE DATE(STR_TO_DATE(`date`, '%m/%d/%y')) = CURDATE()
-    GROUP BY sdate
-");
-                    $stmt->execute();
-                    $labels_day = [];
-                    $data_day = [];
-                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $labels_day[] = $row['sdate'];
-                        $data_day[]   = (float)$row['total_sales'];
-                    }
-
-                    // MONTHLY SALES
-                    $stmt2 = $pdo->query("
-                        SELECT DATE_FORMAT(STR_TO_DATE(`date`, '%m/%d/%y'), '%m') as month_num,
-                               SUM(amount) as total_sales
-                        FROM sales_order
-                        GROUP BY month_num
-                    ");
-                    $sales_month = [];
-                    while ($row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-                        $sales_month[(int)$row['month_num']] = (float)$row['total_sales'];
-                    }
-                    $month_labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                    $month_data = [];
-                    for ($i = 1; $i <= 12; $i++) {
-                        $month_data[] = $sales_month[$i] ?? 0;
-                    }
-
-                    // GRAND TOTAL
-                    $grand = $pdo->query("SELECT SUM(amount) AS total FROM sales_order")->fetch(PDO::FETCH_ASSOC);
-                    $grand_total = $grand['total'] ?? 0;
-                    ?>
-
-                    <div class="row-cards">
-                        <div class="col-card">
-                            <div class="card">
-                                <h3>📅 Daily Sales</h3>
-                                <div class="chart-container">
-                                    <canvas id="dailyChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-card">
-                            <div class="card">
-                                <h3>🗓 Monthly Sales (Jan–Dec)</h3>
-                                <div class="chart-container">
-                                    <canvas id="monthlyChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
                 </div>
             </div>
-        </div>
 
-        <script>
-            // Daily Chart
-            new Chart(document.getElementById('dailyChart').getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: <?= json_encode($labels_day) ?>,
-                    datasets: [{
-                        label: 'Daily Sales (₱)',
+            <?php
+            // 1. Today Sales
+            $stmt = $pdo->prepare("SELECT DATE(STR_TO_DATE(`date`, '%m/%d/%y')) as sdate, SUM(amount) as total_sales
+    FROM sales_order
+    WHERE DATE(STR_TO_DATE(`date`, '%m/%d/%y')) = CURDATE()
+    GROUP BY sdate");
+            $stmt->execute();
+            $labels_day = [];
+            $data_day = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $labels_day[] = $row['sdate'];
+                $data_day[] = (float)$row['total_sales'];
+            }
+
+            // 2. Yesterday
+            $stmt = $pdo->prepare("SELECT DATE(STR_TO_DATE(`date`, '%m/%d/%y')) as sdate, SUM(amount) as total_sales
+    FROM sales_order
+    WHERE DATE(STR_TO_DATE(`date`, '%m/%d/%y')) = CURDATE() - INTERVAL 1 DAY
+    GROUP BY sdate");
+            $stmt->execute();
+            $labels_yesterday = [];
+            $data_yesterday = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $labels_yesterday[] = $row['sdate'];
+                $data_yesterday[] = (float)$row['total_sales'];
+            }
+
+            // 3. Weekly (last 7 days)
+            $stmt = $pdo->prepare("SELECT DATE(STR_TO_DATE(`date`, '%m/%d/%y')) as sdate, SUM(amount) as total_sales
+    FROM sales_order
+    WHERE DATE(STR_TO_DATE(`date`, '%m/%d/%y')) >= CURDATE() - INTERVAL 6 DAY
+    GROUP BY sdate ORDER BY sdate");
+            $stmt->execute();
+            $labels_week = [];
+            $data_week = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $labels_week[] = $row['sdate'];
+                $data_week[] = (float)$row['total_sales'];
+            }
+
+            // 4. Monthly
+            $stmt2 = $pdo->query("SELECT DATE_FORMAT(STR_TO_DATE(`date`, '%m/%d/%y'), '%m') as month_num, SUM(amount) as total_sales
+    FROM sales_order GROUP BY month_num");
+            $sales_month = [];
+            while ($row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                $sales_month[(int)$row['month_num']] = (float)$row['total_sales'];
+            }
+            $month_labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            $month_data = [];
+            for ($i = 1; $i <= 12; $i++) {
+                $month_data[] = $sales_month[$i] ?? 0;
+            }
+
+            // 5. Yearly
+            $stmt = $pdo->query("SELECT DATE_FORMAT(STR_TO_DATE(`date`, '%m/%d/%y'), '%Y') as year, SUM(amount) as total_sales
+    FROM sales_order GROUP BY year ORDER BY year");
+            $labels_year = [];
+            $data_year = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $labels_year[] = $row['year'];
+                $data_year[] = (float)$row['total_sales'];
+            }
+
+            // 6. Product Sales Today
+            $stmt = $pdo->prepare("SELECT product_code, SUM(qty) as total_qty
+    FROM sales_order
+    WHERE DATE(STR_TO_DATE(`date`, '%m/%d/%y')) = CURDATE()
+    GROUP BY product_code ORDER BY total_qty DESC LIMIT 10");
+            $stmt->execute();
+            $product_labels = [];
+            $product_data = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $product_labels[] = $row['product_code'];
+                $product_data[] = (int)$row['total_qty'];
+            }
+            ?>
+
+            <div class="row-cards">
+
+                <!-- Daily -->
+                <div class="col-card">
+                    <div class="card">
+                        <h2>Today's Sales</h2>
+                        <div class="chart-container"><canvas id="dailyChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Yesterday -->
+                <div class="col-card">
+                    <div class="card">
+                        <h2> Yesterday's Sales</h2>
+                        <div class="chart-container"><canvas id="yesterdayChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Weekly -->
+                <div class="col-card">
+                    <div class="card">
+                        <h2> Weekly Sales</h2>
+                        <div class="chart-container"><canvas id="weeklyChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Monthly -->
+                <div class="col-card">
+                    <div class="card">
+                        <h2> Monthly Sales</h2>
+                        <div class="chart-container"><canvas id="monthlyChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Yearly -->
+                <div class="col-card">
+                    <div class="card">
+                        <h2> Yearly Sales</h2>
+                        <div class="chart-container"><canvas id="yearlyChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Product Sales -->
+                <div class="col-card">
+                    <div class="card">
+                        <h2> Product Sales Today</h2>
+                        <div class="chart-container"><canvas id="productChart"></canvas></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <script>
+                // Helper function
+                function pesoFormat(value) {
+                    return '₱' + new Intl.NumberFormat('en-PH').format(value);
+                }
+
+                // Enhanced chart configurations with better styling
+                const chartConfigs = [{
+                        id: 'dailyChart',
+                        label: "Today's Sales",
                         data: <?= json_encode($data_day) ?>,
-                        backgroundColor: 'rgba(54, 162, 235, 0.8)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderSkipped: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 2,
-                            cornerRadius: 8,
-                            displayColors: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Sales: ₱' + new Intl.NumberFormat('en-PH').format(context.parsed.y);
-                                }
-                            }
-                        },
-                        legend: {
-                            labels: {
-                                color: '#333',
-                                font: {
-                                    size: 14,
-                                    weight: 'bold'
-                                }
-                            }
-                        }
+                        labels: <?= json_encode($labels_day) ?>,
+                        color: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        type: 'bar'
                     },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#333',
-                                font: {
-                                    size: 12,
-                                    weight: 'bold'
-                                }
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)',
-                                lineWidth: 1
-                            },
-                            ticks: {
-                                color: '#333',
-                                font: {
-                                    size: 12
-                                },
-                                callback: function(value) {
-                                    return '₱' + new Intl.NumberFormat('en-PH').format(value);
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Monthly Chart
-            new Chart(document.getElementById('monthlyChart').getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: <?= json_encode($month_labels) ?>,
-                    datasets: [{
-                        label: 'Monthly Sales (₱)',
+                    {
+                        id: 'yesterdayChart',
+                        label: "Yesterday's Sales",
+                        data: <?= json_encode($data_yesterday) ?>,
+                        labels: <?= json_encode($labels_yesterday) ?>,
+                        color: 'rgba(240, 147, 251, 0.8)',
+                        borderColor: 'rgba(240, 147, 251, 1)',
+                        type: 'bar'
+                    },
+                    {
+                        id: 'weeklyChart',
+                        label: "Weekly Sales",
+                        data: <?= json_encode($data_week) ?>,
+                        labels: <?= json_encode($labels_week) ?>,
+                        color: 'rgba(79, 172, 254, 0.8)',
+                        borderColor: 'rgba(79, 172, 254, 1)',
+                        type: 'bar'
+                    },
+                    {
+                        id: 'monthlyChart',
+                        label: "Monthly Sales",
                         data: <?= json_encode($month_data) ?>,
-                        fill: true,
-
-                        borderColor: 'rgba(11, 135, 218, 1)',
-                        borderWidth: 4,
-                        tension: 0.3,
-                        pointBackgroundColor: 'rgba(17, 130, 206, 1)',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 3,
-                        pointRadius: 8,
-                        pointHoverRadius: 12,
-                        pointHoverBackgroundColor: 'rgba(21, 137, 245, 1)',
-                        pointHoverBorderColor: '#fff',
-                        pointHoverBorderWidth: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
+                        labels: <?= json_encode($month_labels) ?>,
+                        color: 'rgba(67, 233, 123, 0.8)',
+                        borderColor: 'rgba(67, 233, 123, 1)',
+                        type: 'bar'
                     },
-                    plugins: {
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            borderColor: 'rgba(31, 143, 218, 1)',
-                            borderWidth: 2,
-                            cornerRadius: 8,
-                            displayColors: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Sales: ₱' + new Intl.NumberFormat('en-PH').format(context.parsed.y);
-                                }
-                            }
-                        },
-                        legend: {
-                            labels: {
-                                color: '#333',
-                                font: {
-                                    size: 14,
-                                    weight: 'bold'
-                                }
-                            }
-                        }
+                    {
+                        id: 'yearlyChart',
+                        label: "Yearly Sales",
+                        data: <?= json_encode($data_year) ?>,
+                        labels: <?= json_encode($labels_year) ?>,
+                        color: 'rgba(250, 112, 154, 0.8)',
+                        borderColor: 'rgba(250, 112, 154, 1)',
+                        type: 'bar'
                     },
-                    scales: {
-                        x: {
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)',
-                                lineWidth: 1
-                            },
-                            ticks: {
-                                color: '#333',
-                                font: {
-                                    size: 12,
-                                    weight: 'bold'
-                                }
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)',
-                                lineWidth: 1
-                            },
-                            ticks: {
-                                color: '#333',
-                                font: {
-                                    size: 12
-                                },
-                                callback: function(value) {
-                                    return '₱' + new Intl.NumberFormat('en-PH').format(value);
-                                }
-                            }
-                        }
+                    {
+                        id: 'productChart',
+                        label: "Units Sold",
+                        data: <?= json_encode($product_data) ?>,
+                        labels: <?= json_encode($product_labels) ?>,
+                        color: 'rgba(118, 75, 162, 0.8)',
+                        borderColor: 'rgba(118, 75, 162, 1)',
+                        type: 'doughnut'
                     }
-                }
-            });
-        </script>
-    <?php } ?>
+                ];
+
+                // Create enhanced charts
+                chartConfigs.forEach(config => {
+                    const ctx = document.getElementById(config.id).getContext('2d');
+
+                    // Create gradient for better visual appeal
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                    gradient.addColorStop(0, config.color);
+                    gradient.addColorStop(1, config.color.replace('0.8', '0.2'));
+
+                    const chartOptions = {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            duration: 1500,
+                            easing: 'easeInOutQuart'
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 15,
+                                    font: {
+                                        size: 12,
+                                        weight: '500'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: config.borderColor,
+                                borderWidth: 1,
+                                cornerRadius: 6,
+                                displayColors: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        return config.id === 'productChart' ?
+                                            context.label + ': ' + context.parsed + ' item' :
+                                            config.label + ': ' + pesoFormat(context.parsed.y || context.parsed);
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    // Add scales for bar and line charts
+                    if (config.type === 'bar' || config.type === 'line') {
+                        chartOptions.scales = {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 11,
+                                        weight: '500'
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 11,
+                                        weight: '500'
+                                    },
+                                    callback: function(value) {
+                                        return config.id === 'productChart' ? value : pesoFormat(value);
+                                    }
+                                }
+                            }
+                        };
+                    }
+
+                    // Chart data based on type
+                    let chartData;
+                    if (config.type === 'doughnut') {
+                        chartData = {
+                            labels: config.labels,
+                            datasets: [{
+                                data: config.data,
+                                backgroundColor: [
+                                    '#667eea', '#764ba2', '#f093fb', '#f5576c',
+                                    '#4facfe', '#00f2fe', '#43e97b', '#38f9d7',
+                                    '#fa709a', '#fee140'
+                                ],
+                                borderWidth: 0,
+                                hoverOffset: 8
+                            }]
+                        };
+                    } else {
+                        chartData = {
+                            labels: config.labels,
+                            datasets: [{
+                                label: config.label,
+                                data: config.data,
+                                backgroundColor: config.type === 'line' ? gradient : gradient,
+                                borderColor: config.borderColor,
+                                borderWidth: config.type === 'line' ? 3 : 2,
+                                borderRadius: config.type === 'line' ? 0 : 4,
+                                borderSkipped: false,
+                                fill: config.type === 'line',
+                                tension: config.type === 'line' ? 0.4 : 0,
+                                pointBackgroundColor: config.type === 'line' ? config.borderColor : undefined,
+                                pointBorderColor: config.type === 'line' ? '#fff' : undefined,
+                                pointBorderWidth: config.type === 'line' ? 2 : undefined,
+                                pointRadius: config.type === 'line' ? 5 : undefined,
+                                pointHoverRadius: config.type === 'line' ? 7 : undefined
+                            }]
+                        };
+                    }
+
+                    new Chart(ctx, {
+                        type: config.type,
+                        data: chartData,
+                        options: chartOptions
+                    });
+                });
+            </script>
+
 </body>
-<?php include('footer.php'); ?>
 
 </html>

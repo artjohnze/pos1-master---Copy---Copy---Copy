@@ -137,17 +137,31 @@ and get more free JavaScript, CSS and DHTML scripts! */
             timerRunning = false;
         }
 
+        // Seed from server time in Asia/Manila
+        var serverEpochMs = <?php echo round(microtime(true) * 1000); ?>; // PHP now() in ms
+        var serverTzOffsetMinutes = <?php echo (new DateTime('now', new DateTimeZone('Asia/Manila')))->getOffset() / 60; ?>; // +480
+        var clientBootEpochMs = Date.now();
+
+        function getManilaDateNow() {
+            var elapsed = Date.now() - clientBootEpochMs;
+            var approxServerNowMs = serverEpochMs + elapsed;
+            var utc = new Date(approxServerNowMs);
+            return new Date(utc.getTime() + serverTzOffsetMinutes * 60000);
+        }
+
         function showtime() {
-            var now = new Date();
-            var hours = now.getHours();
-            var minutes = now.getMinutes();
-            var seconds = now.getSeconds()
+            var philippinesTime = getManilaDateNow();
+            var hours = philippinesTime.getHours();
+            var minutes = philippinesTime.getMinutes();
+            var seconds = philippinesTime.getSeconds()
             var timeValue = "" + ((hours > 12) ? hours - 12 : hours)
             if (timeValue == "0") timeValue = 12;
             timeValue += ((minutes < 10) ? ":0" : ":") + minutes
             timeValue += ((seconds < 10) ? ":0" : ":") + seconds
             timeValue += (hours >= 12) ? " P.M." : " A.M."
-            document.clock.face.value = timeValue;
+            if (document.clock && document.clock.face) {
+                document.clock.face.value = timeValue;
+            }
             timerID = setTimeout("showtime()", 1000);
             timerRunning = true;
         }
@@ -161,225 +175,223 @@ and get more free JavaScript, CSS and DHTML scripts! */
     </SCRIPT>
 
 <body>
+    <?php
+    // Only show sidebar if user is not cashier
+    $show_sidebar = true;
+    if (isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_USER_ROLE'] === 'cashier') {
+        $show_sidebar = false;
+    }
+    if ($show_sidebar) {
+        include('navfixed.php');
+        echo '<div class="container-fluid"><div class="row-fluid"><div class="span2"><div class="well sidebar-nav">';
+        echo '<ul class="nav nav-list">';
+        echo '<li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>';
+        echo '<li class="active"><a href="sales.php?id=cash&invoice"><i class="icon-shopping-cart icon-2x"></i> Sales</a> </li>';
+        echo '<li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a> </li>';
+        // echo '<li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>';
+        echo '<li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>';
+        // echo '<li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a>';
+        echo '</li>';
+        echo '<li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a> </li>';
+        echo '<br><br><br><br><br><br>';
+        echo '<li><div class="hero-unit-clock"></div></li>';
+        echo '</ul>';
+        echo '</div></div>';
+        // End sidebar
+    }
+    ?>
+    <?php if ($show_sidebar) {
+        echo '<div class="span10">';
+    } else {
+        echo '<div class="container-fluid"><div class="row-fluid"><div class="span12">';
+    } ?>
+    <a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><button class="btn btn-default"><i
+                class="icon-arrow-left"></i> Back to Sales</button></a>
 
-    <?php include('navfixed.php'); ?>
-
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span2">
-                <div class="well sidebar-nav">
-                    <ul class="nav nav-list">
-                        <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
-                        <li class="active"><a href="sales.php?id=cash&invoice"><i
-                                    class="icon-shopping-cart icon-2x"></i> Sales</a> </li>
-                        <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a> </li>
-                        <!-- <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li> -->
-                        <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
-                        <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
-                        </li>
-                        <li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a> </li>
-                        <br><br><br><br><br><br>
-                        <li>
-                            <div class="hero-unit-clock">
-
-
-                            </div>
-                        </li>
-
-                    </ul>
-                </div>
-                <!--/.well -->
-            </div>
-            <!--/span-->
-
-            <div class="span10">
-                <a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><button class="btn btn-default"><i
-                            class="icon-arrow-left"></i> Back to Sales</button></a>
-
-                <div class="content" id="content">
-                    <div style="margin: 0 auto; padding: 20px; width: 900px; font-weight: normal;">
-                        <div style="width: 100%; height: 190px;">
-                            <div style="width: 900px; float: left;">
-                                <center>
-                                    <div style="font:bold 25px 'Aleo';">Sales Receipt</div>
-                                    Lucena Drug Store <br>
-                                    Pob. Magsaysay Naguilian Isabela <br> <br>
-                                </center>
-                                <div>
-                                    <?php
-                                    $resulta = $db->prepare("SELECT * FROM customer WHERE customer_name= :a");
-                                    $resulta->bindParam(':a', $cname);
-                                    $resulta->execute();
-                                    for ($i = 0; $rowa = $resulta->fetch(); $i++) {
-                                        $address = $rowa['address'];
-                                        $contact = $rowa['contact'];
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-                            <div style="width: 136px; float: left; height: 70px;">
-                                <table cellpadding="3" cellspacing="0"
-                                    style="font-family: arial; font-size: 12px;text-align:left;width : 100%;">
-                                    <tr>
-                                        <td>OR No. :</td>
-                                        <td><?php echo $invoice ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Date :</td>
-                                        <td><?php echo $date ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Cashier :</td>
-                                        <td><?php echo $cashier ?></td>
-                                    </tr>
-
-                                </table>
-
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
-
-                        <div style="width: 100%; margin-top: 10px;">
-                            <table border="1" cellpadding="4" cellspacing="0"
-                                style="font-family: arial; font-size: 12px;	text-align:left;" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th width="90"> Product Code </th>
-                                        <th> Product Name </th>
-                                        <th> Qty </th>
-                                        <th> Price </th>
-                                        <th> Discount </th>
-                                        <th> Amount </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    <?php
-                                    $id = $_GET['invoice'];
-                                    $result = $db->prepare("SELECT * FROM sales_order WHERE invoice= :userid");
-                                    $result->bindParam(':userid', $id);
-                                    $result->execute();
-                                    for ($i = 0; $row = $result->fetch(); $i++) {
-                                    ?>
-                                        <tr class="record">
-                                            <td><?php echo $row['product_code']; ?></td>
-                                            <td><?php echo $row['gen_name']; ?></td>
-                                            <td><?php echo $row['qty']; ?></td>
-                                            <td>
-                                                <?php
-                                                $ppp = $row['price'];
-                                                echo formatMoney($ppp, true);
-                                                ?>
-                                            </td>
-                                            <td>
-                                                <?php
-                                                $ddd = $row['discount'];
-                                                echo formatMoney($ddd, true);
-                                                ?>
-                                            </td>
-                                            <td>
-                                                <?php
-                                                $dfdf = $row['amount'];
-                                                echo formatMoney($dfdf, true);
-                                                ?>
-                                            </td>
-                                        </tr>
-                                    <?php
-                                    }
-                                    ?>
-
-                                    <tr>
-                                        <td colspan="5" style=" text-align:right;"><strong
-                                                style="font-size: 12px;">Total: &nbsp;</strong></td>
-                                        <td colspan="2"><strong style="font-size: 12px;">
-                                                <?php
-                                                // Use total from URL parameter if available, otherwise calculate from database
-                                                if ($total_amount > 0) {
-                                                    echo formatMoney($total_amount, true);
-                                                } else {
-                                                    $sdsd = $_GET['invoice'];
-                                                    $resultas = $db->prepare("SELECT sum(amount) FROM sales_order WHERE invoice= :a");
-                                                    $resultas->bindParam(':a', $sdsd);
-                                                    $resultas->execute();
-                                                    $rowas = $resultas->fetch();
-                                                    $fgfg = $rowas['sum(amount)'] ?? 0;
-                                                    echo formatMoney($fgfg, true);
-                                                    // Update total_amount for change calculation
-                                                    if ($total_amount == 0) {
-                                                        $total_amount = $fgfg;
-                                                        if ($cash_tendered > 0 && $change_amount == 0) {
-                                                            $change_amount = $cash_tendered - $total_amount;
-                                                        }
-                                                    }
-                                                }
-                                                ?>
-                                            </strong></td>
-                                    </tr>
-                                    <?php if ($pt == 'cash') {
-                                    ?>
-                                        <tr>
-                                            <td colspan="5" style=" text-align:right;"><strong
-                                                    style="font-size: 12px; color: #222222;">Cash Tendered:&nbsp;</strong>
-                                            </td>
-                                            <td colspan="2"><strong style="font-size: 12px; color: #222222;">
-                                                    <?php
-                                                    echo formatMoney($cash_tendered, true);
-                                                    ?>
-                                                </strong></td>
-                                        </tr>
-                                    <?php
-                                    }
-                                    ?>
-                                    <tr>
-                                        <td colspan="5" style=" text-align:right;"><strong
-                                                style="font-size: 12px; color: #222222;">
-                                                <font style="font-size:20px;">
-                                                    <?php
-                                                    if ($pt == 'cash') {
-                                                        echo 'Change:';
-                                                    }
-                                                    if ($pt == 'credit') {
-                                                        echo 'Due Date:';
-                                                    }
-                                                    ?>&nbsp;
-                                            </strong></td>
-                                        <td colspan="2"><strong style="font-size: 15px; color: #222222;">
-                                                <?php
-                                                function formatMoney($number, $fractional = false)
-                                                {
-                                                    if ($fractional) {
-                                                        $number = sprintf('%.2f', $number);
-                                                    }
-                                                    while (true) {
-                                                        $replaced = preg_replace('/(-?\d+)(\d\d\d)/', '$1,$2', $number);
-                                                        if ($replaced != $number) {
-                                                            $number = $replaced;
-                                                        } else {
-                                                            break;
-                                                        }
-                                                    }
-                                                    return $number;
-                                                }
-                                                if ($pt == 'credit') {
-                                                    echo $cash_tendered;
-                                                }
-                                                if ($pt == 'cash') {
-                                                    echo formatMoney($change_amount, true);
-                                                }
-                                                ?>
-                                            </strong></td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-
-                        </div>
+    <div class="content" id="content">
+        <div style="margin: 0 auto; padding: 20px; width: 900px; font-weight: normal;">
+            <div style="width: 100%; height: 190px;">
+                <div style="width: 900px; float: left;">
+                    <center>
+                        <div style="font:bold 25px 'Aleo';">Sales Receipt</div>
+                        Lucena Drug Store <br>
+                        Pob. Magsaysay Naguilian Isabela <br> <br>
+                    </center>
+                    <div>
+                        <?php
+                        $resulta = $db->prepare("SELECT * FROM customer WHERE customer_name= :a");
+                        $resulta->bindParam(':a', $cname);
+                        $resulta->execute();
+                        for ($i = 0; $rowa = $resulta->fetch(); $i++) {
+                            $address = $rowa['address'];
+                            $contact = $rowa['contact'];
+                        }
+                        ?>
                     </div>
                 </div>
+                <div style="width: 136px; float: left; height: 70px;">
+                    <table cellpadding="3" cellspacing="0"
+                        style="font-family: arial; font-size: 12px;text-align:left;width : 100%;">
+                        <tr>
+                            <td>OR No. :</td>
+                            <td><?php echo $invoice ?></td>
+                        </tr>
+                        <tr>
+                            <td>Date :</td>
+                            <td><?php echo $date ?></td>
+                        </tr>
+                        <tr>
+                            <td>Cashier :</td>
+                            <td><?php echo $cashier ?></td>
+                        </tr>
+
+                    </table>
+
+                </div>
+                <div class="clearfix"></div>
             </div>
-            <div class="pull-right" style="margin-right:100px;">
-                <a href="javascript:Clickheretoprint()" style="font-size:20px;"><button
-                        class="btn btn-success btn-large"><i class="icon-print"></i> Print</button></a>
+
+            <div style="width: 100%; margin-top: 10px;">
+                <table border="1" cellpadding="4" cellspacing="0"
+                    style="font-family: arial; font-size: 12px;	text-align:left;" width="100%">
+                    <thead>
+                        <tr>
+                            <th width="90"> Product Code </th>
+                            <th> Product Name </th>
+                            <th> Qty </th>
+                            <th> Price </th>
+                            <th> Discount </th>
+                            <th> Amount </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <?php
+                        $id = $_GET['invoice'];
+                        $result = $db->prepare("SELECT * FROM sales_order WHERE invoice= :userid");
+                        $result->bindParam(':userid', $id);
+                        $result->execute();
+                        for ($i = 0; $row = $result->fetch(); $i++) {
+                        ?>
+                            <tr class="record">
+                                <td><?php echo $row['product_code']; ?></td>
+                                <td><?php echo $row['gen_name']; ?></td>
+                                <td><?php echo $row['qty']; ?></td>
+                                <td>
+                                    <?php
+                                    $ppp = $row['price'];
+                                    echo formatMoney($ppp, true);
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php
+                                    $ddd = $row['discount'];
+                                    echo formatMoney($ddd, true);
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php
+                                    $dfdf = $row['amount'];
+                                    echo formatMoney($dfdf, true);
+                                    ?>
+                                </td>
+                            </tr>
+                        <?php
+                        }
+                        ?>
+
+                        <tr>
+                            <td colspan="5" style=" text-align:right;"><strong
+                                    style="font-size: 12px;">Total: &nbsp;</strong></td>
+                            <td colspan="2"><strong style="font-size: 12px;">
+                                    <?php
+                                    // Use total from URL parameter if available, otherwise calculate from database
+                                    if ($total_amount > 0) {
+                                        echo formatMoney($total_amount, true);
+                                    } else {
+                                        $sdsd = $_GET['invoice'];
+                                        $resultas = $db->prepare("SELECT sum(amount) FROM sales_order WHERE invoice= :a");
+                                        $resultas->bindParam(':a', $sdsd);
+                                        $resultas->execute();
+                                        $rowas = $resultas->fetch();
+                                        $fgfg = $rowas['sum(amount)'] ?? 0;
+                                        echo formatMoney($fgfg, true);
+                                        // Update total_amount for change calculation
+                                        if ($total_amount == 0) {
+                                            $total_amount = $fgfg;
+                                            if ($cash_tendered > 0 && $change_amount == 0) {
+                                                $change_amount = $cash_tendered - $total_amount;
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </strong></td>
+                        </tr>
+                        <?php if ($pt == 'cash') {
+                        ?>
+                            <tr>
+                                <td colspan="5" style=" text-align:right;"><strong
+                                        style="font-size: 12px; color: #222222;">Cash Tendered:&nbsp;</strong>
+                                </td>
+                                <td colspan="2"><strong style="font-size: 12px; color: #222222;">
+                                        <?php
+                                        echo formatMoney($cash_tendered, true);
+                                        ?>
+                                    </strong></td>
+                            </tr>
+                        <?php
+                        }
+                        ?>
+                        <tr>
+                            <td colspan="5" style=" text-align:right;"><strong
+                                    style="font-size: 12px; color: #222222;">
+                                    <font style="font-size:20px;">
+                                        <?php
+                                        if ($pt == 'cash') {
+                                            echo 'Change:';
+                                        }
+                                        if ($pt == 'credit') {
+                                            echo 'Due Date:';
+                                        }
+                                        ?>&nbsp;
+                                </strong></td>
+                            <td colspan="2"><strong style="font-size: 15px; color: #222222;">
+                                    <?php
+                                    function formatMoney($number, $fractional = false)
+                                    {
+                                        if ($fractional) {
+                                            $number = sprintf('%.2f', $number);
+                                        }
+                                        while (true) {
+                                            $replaced = preg_replace('/(-?\d+)(\d\d\d)/', '$1,$2', $number);
+                                            if ($replaced != $number) {
+                                                $number = $replaced;
+                                            } else {
+                                                break;
+                                            }
+                                        }
+                                        return $number;
+                                    }
+                                    if ($pt == 'credit') {
+                                        echo $cash_tendered;
+                                    }
+                                    if ($pt == 'cash') {
+                                        echo formatMoney($change_amount, true);
+                                    }
+                                    ?>
+                                </strong></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
             </div>
         </div>
+    </div>
+    </div>
+    <div class="pull-right" style="margin-right:100px;">
+        <a href="javascript:Clickheretoprint()" style="font-size:20px;"><button
+                class="btn btn-success btn-large"><i class="icon-print"></i> Print</button></a>
+    </div>
+    </div>
     </div>

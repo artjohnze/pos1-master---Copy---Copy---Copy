@@ -20,8 +20,8 @@
 		<span>Selling Price : </span><input type="text" id="txt1" style="width:265px; height:30px;" name="price" required /><br>
 		<div id="sellingPriceError" style="color: red; font-size: 12px; margin-left: 95px; display: none;">Selling Price is required</div>
 
-		<span>Original Price : </span><input type="text" id="txt2" style="width:265px; height:30px;" name="o_price" required /><br>
-		<div id="originalPriceError" style="color: red; font-size: 12px; margin-left: 95px; display: none;">Original Price is required</div>
+		<!-- <span>Original Price : </span><input type="text" id="txt2" style="width:265px; height:30px;" name="o_price" required /><br>
+		<div id="originalPriceError" style="color: red; font-size: 12px; margin-left: 95px; display: none;">Original Price is required</div> -->
 		<span>Supplier : </span>
 		<select name="supplier" style="width:265px; height:30px;" id="supplier" required>
 			<option value="">Select Supplier</option>
@@ -92,11 +92,11 @@
 		}
 
 		// Original Price validation
-		const originalPrice = document.getElementById('txt2').value.trim();
-		if (originalPrice === '') {
-			showError('originalPriceError');
-			isValid = false;
-		}
+		// const originalPrice = document.getElementById('txt2').value.trim();
+		// if (originalPrice === '') {
+		// 	showError('originalPriceError');
+		// 	isValid = false;
+		// }
 
 		// Supplier validation
 		const supplier = document.getElementById('supplier').value;
@@ -120,7 +120,7 @@
 	}
 
 	function hideAllErrors() {
-		const errors = ['brandNameError', 'genericNameError', 'descriptionError', 'expiryDateError', 'sellingPriceError', 'originalPriceError', 'supplierError', 'quantityError'];
+		const errors = ['brandNameError', 'genericNameError', 'descriptionError', 'expiryDateError', 'sellingPriceError', 'supplierError', 'quantityError'];
 		errors.forEach(function(errorId) {
 			document.getElementById(errorId).style.display = 'none';
 		});

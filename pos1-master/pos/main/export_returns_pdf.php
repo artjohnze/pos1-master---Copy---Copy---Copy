@@ -80,15 +80,7 @@ $result->execute();
         Generated on: <?php echo date('Y-m-d H:i:s'); ?>
     </div>
     <table>
-        <thead>
-            <tr>
-                <th>Return Date</th>
-                <th>Product</th>
-                <th>Supplier</th>
-                <th>Quantity</th>
-                <th>Reason</th>
-            </tr>
-        </thead>
+
         <tbody>
 
 
