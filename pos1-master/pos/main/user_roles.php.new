@@ -1,0 +1,190 @@
+<?php
+include('../connect.php');
+session_start();
+if (!isset($_SESSION['SESS_MEMBER_ID'])) {
+    header('location: ../index.php');
+    exit();
+}
+
+// Check if user has admin privileges
+$user_id = $_SESSION['SESS_MEMBER_ID'];
+$query = $db->prepare("SELECT position FROM user WHERE id = ?");
+$query->execute(array($user_id));
+$user = $query->fetch();
+
+if ($user['position'] !== 'admin') {
+    header('location: index.php');
+    exit();
+}
+
+function createRandomPassword() {
+    $chars = "003232303232023232023456789";
+    srand((float) microtime() * 1000000);
+    $i = 0;
+    $pass = '';
+    while ($i <= 7) {
+        $num = rand() % 33;
+        $tmp = substr($chars, $num, 1);
+        $pass = $pass . $tmp;
+        $i++;
+    }
+    return $pass;
+}
+$finalcode = 'RS-' . createRandomPassword();
+
+// Handle form submission for adding new user
+if (isset($_POST['add_user'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $name = $_POST['name'];
+    $position = $_POST['position'];
+
+    // Check if username already exists
+    $check = $db->prepare("SELECT id FROM user WHERE username = ?");
+    $check->execute(array($username));
+    if ($check->rowCount() > 0) {
+        $error = "Username already exists!";
+    } else {
+        $insert = $db->prepare("INSERT INTO user (username, password, name, position) VALUES (?, ?, ?, ?)");
+        $insert->execute(array($username, $password, $name, $position));
+        $success = "User added successfully!";
+    }
+}
+
+// Handle user deletion
+if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
+    $id = $_GET['delete'];
+    // Prevent deleting your own account
+    if ($id != $user_id) {
+        $delete = $db->prepare("DELETE FROM user WHERE id = ?");
+        $delete->execute(array($id));
+        $success = "User deleted successfully!";
+    }
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Roles Management</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/DT_bootstrap.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../style.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="src/facebox.css" media="screen" rel="stylesheet" type="text/css" />
+    <script src="lib/jquery.js" type="text/javascript"></script>
+    <script src="src/facebox.js" type="text/javascript"></script>
+</head>
+<body>
+    <?php include('navfixed.php'); ?>
+    <?php
+    $position = $_SESSION['SESS_LAST_NAME'];
+    if ($position == 'cashier') {
+        echo '<a href="../index.php">Logout</a>';
+    }
+    if ($position == 'admin') {
+    ?>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span2">
+                <div class="well sidebar-nav">
+                    <ul class="nav nav-list">
+                        <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
+                        <li><a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><i class="icon-shopping-cart icon-2x"></i> Sales</a></li>
+                        <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a></li>
+                        <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
+                        <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a></li>
+                        <li class="active"><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
+                        <li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="span10">
+                <div class="contentheader">
+                    <i class="icon-group"></i> User Management
+                </div>
+                <br />
+
+                <?php if (isset($error)): ?>
+                    <div class="alert alert-danger"><?php echo $error; ?></div>
+                <?php endif; ?>
+                <?php if (isset($success)): ?>
+                    <div class="alert alert-success"><?php echo $success; ?></div>
+                <?php endif; ?>
+
+                <!-- Add New User Form -->
+                <form action="" method="post" class="addform">
+                    <h3>Add New User</h3>
+                    <table>
+                        <tr>
+                            <td>Username:</td>
+                            <td><input type="text" name="username" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Password:</td>
+                            <td><input type="password" name="password" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Full Name:</td>
+                            <td><input type="text" name="name" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Role:</td>
+                            <td>
+                                <select name="position" required>
+                                    <option value="admin">Admin</option>
+                                    <option value="cashier">Cashier</option>
+                                    <option value="supplier">Supplier</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="submit" name="add_user" value="Add User" class="btn btn-primary" />
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+
+                <!-- User List -->
+                <div class="user-list">
+                    <h3>Current Users</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $users = $db->query("SELECT * FROM user ORDER BY position, name");
+                            while ($row = $users->fetch()):
+                            ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($row['username']); ?></td>
+                                <td><?php echo htmlspecialchars($row['name']); ?></td>
+                                <td><?php echo ucfirst(htmlspecialchars($row['position'])); ?></td>
+                                <td>
+                                    <?php if ($row['id'] != $user_id): ?>
+                                        <a href="?delete=<?php echo $row['id']; ?>"
+                                           onclick="return confirm('Are you sure you want to delete this user?')"
+                                           class="btn btn-danger btn-sm">Delete</a>
+                                    <?php else: ?>
+                                        <span class="text-muted">Current User</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
+</body>
+<?php include('footer.php'); ?>
+</html>

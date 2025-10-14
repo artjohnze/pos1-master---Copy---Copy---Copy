@@ -218,7 +218,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                             <th> Brand Name </th>
                             <th> Generic Name </th>
                             <th> Description </th>
-                            /*<th> Original Price </th>*/
+
                             <th> Selling Price </th>
                             <th> Supplier </th>
                             <th> Quantity </th>
@@ -257,7 +257,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                 <td><?php echo $row['product_code']; ?></td>
                                 <td><?php echo $row['gen_name']; ?></td>
                                 <td><?php echo $row['product_name']; ?></td>
-                                <td><?php echo formatMoney($row['o_price'], true); ?></td>
+
                                 <td><?php echo formatMoney($row['price'], true); ?></td>
                                 <td><?php echo $row['supplier']; ?></td>
                                 <td><?php echo $row['qty']; ?></td>

@@ -4,7 +4,6 @@
     <title>
         POS
     </title>
-
     <?php
     require_once('auth.php');
     ?>
@@ -22,8 +21,15 @@
         .sidebar-nav {
             padding: 9px 0;
         }
+
+        /* Make table headers non-interactive */
+        table th {
+            pointer-events: none;
+            cursor: default;
+        }
     </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
+
 
     <link href="../style.css" media="screen" rel="stylesheet" type="text/css" />
     <!--sa poip up-->
@@ -32,8 +38,6 @@
     <link href="src/facebox.css" media="screen" rel="stylesheet" type="text/css" />
     <script src="lib/jquery.js" type="text/javascript"></script>
     <script src="src/facebox.js" type="text/javascript"></script>
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             $('a[rel*=facebox]').facebox({
@@ -65,39 +69,6 @@ function createRandomPassword()
 $finalcode = '' . createRandomPassword();
 ?>
 
-<script>
-    function sum() {
-        var txtFirstNumberValue = document.getElementById('txt1').value;
-        var txtSecondNumberValue = document.getElementById('txt2').value;
-        var result = parseInt(txtFirstNumberValue) - parseInt(txtSecondNumberValue);
-        if (!isNaN(result)) {
-            document.getElementById('txt3').value = result;
-
-        }
-
-        var txtFirstNumberValue = document.getElementById('txt11').value;
-        var txtSecondNumberValue = document.getElementById('txt22').value;
-        var result = parseInt(txtFirstNumberValue) + parseInt(txtSecondNumberValue);
-        if (!isNaN(result)) {
-            document.getElementById('txt44').value = result;
-        }
-
-        var txtFirstNumberValue = document.getElementById('txt11').value;
-        var txtSecondNumberValue = document.getElementById('txt33').value;
-        var result = parseInt(txtFirstNumberValue) + parseInt(txtSecondNumberValue);
-        if (!isNaN(result)) {
-            document.getElementById('txt55').value = result;
-
-        }
-
-        var txtFirstNumberValue = document.getElementById('txt4').value;
-        var result = parseInt(txtFirstNumberValue);
-        if (!isNaN(result)) {
-            document.getElementById('txt5').value = result;
-        }
-
-    }
-</script>
 <script language="javascript" type="text/javascript">
     /* Visit http://www.yaldex.com/ for full source code
 and get more free JavaScript, CSS and DHTML scripts! */
@@ -142,22 +113,20 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 <div class="well sidebar-nav">
                     <ul class="nav nav-list">
                         <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
-                        <!-- <li><a href="sales.php?id=cash&invoice=?php echo $finalcode ?>"><i
+                        <!-- <li><a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><i
                                     class="icon-shopping-cart icon-2x"></i> Sales</a> </li> -->
-                        <li class="active"><a href="products.php"><i class="icon-table icon-2x"></i> Products</a> </li>
+                        <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a> </li>
                         <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>-->
                         <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
-                        <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
+                        <li class="active"><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
                         <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li>
-                        <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
+                        <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
                         <li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a>
-
                             <br><br><br><br><br><br>
                         <li>
                             <div class="hero-unit-clock">
-
 
                             </div>
                         </li>
@@ -169,108 +138,73 @@ and get more free JavaScript, CSS and DHTML scripts! */
             <!--/span-->
             <div class="span10">
                 <div class="contentheader">
-                    <i class="icon-table"></i> Products
+                    <i class="icon-group"></i> Suppliers
                 </div>
                 <br>
-
-
                 <!-- <ul class="breadcrumb">
                     <li><a href="index.php">Dashboard</a></li> /
-                    <li class="active">Products</li>
+                    <li class="active">Suppliers</li>
                 </ul> -->
 
 
                 <div style="margin-top: -19px; margin-bottom: 21px;">
-
                     <?php
                     include('../connect.php');
-                    $result = $db->prepare("SELECT * FROM products ORDER BY product_id DESC");
+                    $result = $db->prepare("SELECT * FROM supliers ORDER BY suplier_id DESC");
                     $result->execute();
                     $rowcount = $result->rowcount();
                     ?>
                     <div style="text-align:center;">
-                        Total Number of Products: <font color="green" style="font:bold 22px 'Aleo';">
+                        Total Number of Suppliers: <font color="green" style="font:bold 22px 'Aleo';">
                             <?php echo $rowcount; ?></font>
                     </div>
                 </div>
-                <br>
                 <?php
                 // Pagination settings
                 $records_per_page = 10;
                 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
                 $offset = ($page - 1) * $records_per_page;
-
                 // Get total number of records
-                $total_result = $db->prepare("SELECT COUNT(*) FROM products");
+                $total_result = $db->prepare("SELECT COUNT(*) FROM supliers");
                 $total_result->execute();
                 $total_records = $total_result->fetchColumn();
                 $total_pages = ceil($total_records / $records_per_page);
                 ?>
-
-                <input type="text" style="padding:15px;" name="filter" value="" id="filter"
-                    placeholder="Search Product..." autocomplete="off" />
-                <a rel="facebox" href="addproduct.php"><Button type="submit" class="btn btn-info"
+                <input type="text" name="filter" style="height:35px; margin-top: -1px;" value="" id="filter"
+                    placeholder="Search Supplier..." autocomplete="off" />
+                <a rel="facebox" href="addsupplier.php"><Button type="submit" class="btn btn-info"
                         style="float:right; width:230px; height:35px;" /><i class="icon-plus-sign icon-large"></i> Add
-                    Product</button></a><br><br>
+                    Supplier</button></a>
+                <br><br>
                 <table class="table table-bordered" id="resultTable" data-responsive="table" style="text-align: left;">
                     <thead>
                         <tr>
-                            <th> Brand Name </th>
-                            <th> Generic Name </th>
-                            <th> Description </th>
-                            /*<th> Original Price </th>*/
-                            <th> Selling Price </th>
-                            <th> Supplier </th>
-                            <th> Quantity </th>
-                            <th> Sold </th>
-                            <th> Expiry Date </th>
-                            <th> Date Arrived </th>
-                            <th width="13%"> Action </th>
+                            <th width="200"> Supplier </th>
+                            <th width="200"> Address </th>
+                            <th width="200"> Contact No.</th>
+                            <th width="200"> Note</th>
+                            <th width="200"> Action </th>
                         </tr>
                     </thead>
                     <tbody>
-
                         <?php
-                        function formatMoney($number, $fractional = false)
-                        {
-                            if ($fractional) {
-                                $number = sprintf('%.2f', $number);
-                            }
-                            while (true) {
-                                $replaced = preg_replace('/(-?\d+)(\d\d\d)/', '$1,$2', $number);
-                                if ($replaced != $number) {
-                                    $number = $replaced;
-                                } else {
-                                    break;
-                                }
-                            }
-                            return $number;
-                        }
                         include('../connect.php');
-                        $result = $db->prepare("SELECT * FROM products ORDER BY product_id DESC LIMIT :limit OFFSET :offset");
+                        $result = $db->prepare("SELECT * FROM supliers ORDER BY suplier_id DESC LIMIT :limit OFFSET :offset");
                         $result->bindParam(':limit', $records_per_page, PDO::PARAM_INT);
                         $result->bindParam(':offset', $offset, PDO::PARAM_INT);
                         $result->execute();
                         for ($i = 0; $row = $result->fetch(); $i++) {
                         ?>
                             <tr class="record">
-                                <td><?php echo $row['product_code']; ?></td>
-                                <td><?php echo $row['gen_name']; ?></td>
-                                <td><?php echo $row['product_name']; ?></td>
-                                <td><?php echo formatMoney($row['o_price'], true); ?></td>
-                                <td><?php echo formatMoney($row['price'], true); ?></td>
-                                <td><?php echo $row['supplier']; ?></td>
-                                <td><?php echo $row['qty']; ?></td>
-                                <td><?php echo $row['qty_sold']; ?></td>
-                                <td><?php echo $row['expiry_date']; ?></td>
-                                <td><?php echo date('Y-m-d H:i', strtotime($row['date_arrival'])); ?></td>
+                                <td><?php echo $row['suplier_name']; ?></td>
+                                <td><?php echo $row['suplier_address']; ?></td>
+                                <td><?php echo $row['suplier_contact']; ?></td>
+                                <td><?php echo $row['note']; ?></td>
                                 <td>
-                                    <a rel="facebox" title="Click to edit the product" href="editproduct.php?id=<?php echo $row['product_id']; ?>">
-                                        <button class="btn btn-mini btn-warning"><i class="icon-edit"></i> Update</button>
-                                    </a>
-                                    <a rel="facebox" title="Return to Supplier" href="return_product.php?id=<?php echo $row['product_id']; ?>">
-                                        <button class="btn btn-mini btn-danger"><i class="icon-share"></i> Return</button>
-                                    </a>
+                                    <a rel="facebox" href="editsupplier.php?id=<?php echo $row['suplier_id']; ?>"><button
+                                            class="btn btn-warning btn-mini"><i></i>Update </button></a>
+                                    &nbsp;
+                                    <a href="supplier_deliveries.php?name=<?php echo urlencode($row['suplier_name']); ?>" class="btn btn-info btn-mini">View Deliveries</a>
                                 </td>
                             </tr>
                         <?php
@@ -287,6 +221,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                             <?php if ($page > 1): ?>
                                 <li><a href="?page=<?php echo $page - 1; ?>">&laquo; Previous</a></li>
                             <?php endif; ?>
+
                             <?php
                             // Show page numbers
                             for ($i = 1; $i <= $total_pages; $i++) {
@@ -297,6 +232,7 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                 }
                             }
                             ?>
+
                             <?php if ($page < $total_pages): ?>
                                 <li><a href="?page=<?php echo $page + 1; ?>">Next &raquo;</a></li>
                             <?php endif; ?>
@@ -305,16 +241,17 @@ and get more free JavaScript, CSS and DHTML scripts! */
 
                     <div style="margin-top: 10px; color: #666;">
                         Showing <?php echo $offset + 1; ?> to <?php echo min($offset + $records_per_page, $total_records); ?>
-                        of <?php echo $total_records; ?> products (Page <?php echo $page; ?> of <?php echo $total_pages; ?>)
+                        of <?php echo $total_records; ?> suppliers (Page <?php echo $page; ?> of <?php echo $total_pages; ?>)
                     </div>
                 </div>
+
                 <div class="clearfix"></div>
             </div>
         </div>
     </div>
 
     <script src="js/jquery.js"></script>
+    <?php include('footer.php'); ?>
 </body>
-<?php include('footer.php'); ?>
 
 </html>

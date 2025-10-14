@@ -18,6 +18,12 @@ require_once('auth.php');
         .sidebar-nav {
             padding: 9px 0;
         }
+
+        /* Make table headers non-interactive */
+        table th {
+            pointer-events: none;
+            cursor: default;
+        }
     </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="../style.css" media="screen" rel="stylesheet" type="text/css" />
@@ -42,7 +48,6 @@ require_once('auth.php');
                     showConfirmButton: false
                 });
             }
-
             if (urlParams.has('error') && urlParams.get('error') === 'delete_failed') {
                 Swal.fire({
                     title: 'Error!',
@@ -51,7 +56,6 @@ require_once('auth.php');
                     confirmButtonText: 'OK'
                 });
             }
-
             // Clean up URL
             window.history.replaceState({}, document.title, 'returns.php');
         });
@@ -66,10 +70,12 @@ require_once('auth.php');
                 <div class="well sidebar-nav">
                     <ul class="nav nav-list">
                         <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
-                        <li><a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><i class="icon-shopping-cart icon-2x"></i> Sales</a></li>
+                        <!-- <li><a href="sales.php?id=cash&invoice=?php echo $finalcode ?>"><i class="icon-shopping-cart icon-2x"></i> Sales</a></li> -->
                         <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a></li>
                         <li class="active"><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a></li>
+                        <!-- <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li> -->
+                        <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
                         <li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a></li>
                     </ul>
                 </div>
@@ -78,16 +84,15 @@ require_once('auth.php');
                 <div class="contentheader">
                     <i class="icon-share"></i> Supplier Returns
                 </div>
-                <ul class="breadcrumb">
+                <br>
+                <!-- <ul class="breadcrumb">
                     <li><a href="index.php">Dashboard</a></li> /
                     <li class="active">Supplier Returns</li>
-                </ul>
+                </ul> -->
                 <div style="margin-bottom: 10px;" class="row-fluid">
                     <a href="export_returns_pdf.php" class="btn btn-primary"><i class="icon-file icon-large"></i> Export to PDF</a>
                     <a href="export_returns_excel.php" class="btn btn-success"><i class="icon-table icon-large"></i> Export to Excel</a>
-
                 </div>
-
                 <!-- Delete All Modal -->
                 <div id="deleteAllModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-header">
@@ -102,7 +107,6 @@ require_once('auth.php');
                         <a href="delete_all_returns.php" class="btn btn-danger"><i class="icon-trash"></i> Delete All</a>
                     </div>
                 </div>
-
                 <table class="table table-bordered" id="resultTable" data-responsive="table">
                     <thead>
                         <tr>
@@ -119,11 +123,8 @@ require_once('auth.php');
                                FROM supplier_returns r 
                                JOIN products p ON r.product_id = p.product_id
                                ORDER BY r.return_date DESC";
-
                         $result = $db->prepare($sql);
-
                         $result->execute();
-
                         while ($row = $result->fetch()) {
                         ?>
                             <tr class="record">
@@ -142,7 +143,6 @@ require_once('auth.php');
                             </td>
                         </tr>
                     </tfoot>
-                    </tbody>
                 </table>
             </div>
         </div>

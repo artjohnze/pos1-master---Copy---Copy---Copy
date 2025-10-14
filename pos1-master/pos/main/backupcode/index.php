@@ -1,7 +1,4 @@
 <?php
-// Start session and authentication first
-require_once('auth.php');
-
 // DB connection
 $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
 ?>
@@ -26,87 +23,105 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
     <script src="chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Poppins', sans-serif;
-        }
-
-
-
         .row-cards {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
+            gap: 20px;
         }
 
         .col-card {
-            flex: 1 1 350px;
-            /* smaller min width */
-            max-width: 400px;
+            flex: 1;
+            min-width: 400px;
         }
 
         .card {
             background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            padding: 10px;
-            /* even smaller padding */
-            margin-bottom: 10px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 25px;
         }
 
-        .card h2 {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 5px;
+        h3 {
             text-align: center;
-            color: #333;
+            font-size: 18px;
+            margin-bottom: 20px;
         }
 
         .chart-container {
             position: relative;
-            height: 200px;
-            /* much smaller height */
-            margin: 5px 0;
+            height: 400px;
         }
 
         canvas {
             width: 100% !important;
-            height: 200px !important;
-            /* much smaller graph */
+            height: 400px !important;
+        }
+    </style>
+    <style>
+        .sidebar-nav {
+            padding: 9px 0;
         }
 
-        .total-card {
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 25px;
+
+        }
+
+        .card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
             text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            color: rgb(219, 107, 15);
+        }
+
+        .row-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .col-card {
+            flex: 1;
+            min-width: 400px;
         }
 
         @media (max-width: 768px) {
             .col-card {
-                min-width: 90%;
+                min-width: 100%;
             }
 
             .row-cards {
                 flex-direction: column;
             }
 
-            .chart-container {
-                height: 180px !important;
-            }
-
             canvas {
-                height: 180px !important;
+                height: 350px !important;
             }
         }
-    </style>
 
-    <style>
-        .sidebar-nav {
-            padding: 9px 0;
+        .total-card {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 10px 0;
         }
     </style>
+    <?php require_once('auth.php'); ?>
     <?php
     function createRandomPassword()
     {
@@ -147,7 +162,6 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                         <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a></li>-->
                         <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a></li>
-                        <!-- <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li> -->
                         <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
@@ -239,7 +253,7 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Daily -->
                 <div class="col-card">
                     <div class="card">
-                        <h2>📅 Today's Sales</h2>
+                        <h3>📅 Today's Sales</h3>
                         <div class="chart-container"><canvas id="dailyChart"></canvas></div>
                     </div>
                 </div>
@@ -247,7 +261,7 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Yesterday -->
                 <div class="col-card">
                     <div class="card">
-                        <h2>🕒 Yesterday's Sales</h2>
+                        <h3>🕒 Yesterday's Sales</h3>
                         <div class="chart-container"><canvas id="yesterdayChart"></canvas></div>
                     </div>
                 </div>
@@ -255,7 +269,7 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Weekly -->
                 <div class="col-card">
                     <div class="card">
-                        <h2>📅 Weekly Sales</h2>
+                        <h3>📅 Weekly Sales</h3>
                         <div class="chart-container"><canvas id="weeklyChart"></canvas></div>
                     </div>
                 </div>
@@ -263,7 +277,7 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Monthly -->
                 <div class="col-card">
                     <div class="card">
-                        <h2>🗓 Monthly Sales</h2>
+                        <h3>🗓 Monthly Sales</h3>
                         <div class="chart-container"><canvas id="monthlyChart"></canvas></div>
                     </div>
                 </div>
@@ -271,7 +285,7 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Yearly -->
                 <div class="col-card">
                     <div class="card">
-                        <h2>📆 Yearly Sales</h2>
+                        <h3>📆 Yearly Sales</h3>
                         <div class="chart-container"><canvas id="yearlyChart"></canvas></div>
                     </div>
                 </div>
@@ -279,7 +293,7 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Product Sales -->
                 <div class="col-card">
                     <div class="card">
-                        <h2>📦 Product Sales Today</h2>
+                        <h3>📦 Product Sales Today</h3>
                         <div class="chart-container"><canvas id="productChart"></canvas></div>
                     </div>
                 </div>
@@ -287,190 +301,85 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
             </div>
 
             <script>
-                // Helper function
+                // Helper
                 function pesoFormat(value) {
                     return '₱' + new Intl.NumberFormat('en-PH').format(value);
                 }
 
-                // Enhanced chart configurations with better styling
-                const chartConfigs = [{
+                // Chart configs
+                const chartData = [{
                         id: 'dailyChart',
                         label: "Today's Sales",
                         data: <?= json_encode($data_day) ?>,
-                        labels: <?= json_encode($labels_day) ?>,
-                        color: 'rgba(102, 126, 234, 0.8)',
-                        borderColor: 'rgba(102, 126, 234, 1)',
-                        type: 'bar'
+                        labels: <?= json_encode($labels_day) ?>
                     },
                     {
                         id: 'yesterdayChart',
                         label: "Yesterday's Sales",
                         data: <?= json_encode($data_yesterday) ?>,
-                        labels: <?= json_encode($labels_yesterday) ?>,
-                        color: 'rgba(240, 147, 251, 0.8)',
-                        borderColor: 'rgba(240, 147, 251, 1)',
-                        type: 'bar'
+                        labels: <?= json_encode($labels_yesterday) ?>
                     },
                     {
                         id: 'weeklyChart',
                         label: "Weekly Sales",
                         data: <?= json_encode($data_week) ?>,
-                        labels: <?= json_encode($labels_week) ?>,
-                        color: 'rgba(79, 172, 254, 0.8)',
-                        borderColor: 'rgba(79, 172, 254, 1)',
-                        type: 'bar'
+                        labels: <?= json_encode($labels_week) ?>
                     },
                     {
                         id: 'monthlyChart',
                         label: "Monthly Sales",
                         data: <?= json_encode($month_data) ?>,
-                        labels: <?= json_encode($month_labels) ?>,
-                        color: 'rgba(67, 233, 123, 0.8)',
-                        borderColor: 'rgba(67, 233, 123, 1)',
-                        type: 'bar'
+                        labels: <?= json_encode($month_labels) ?>
                     },
                     {
                         id: 'yearlyChart',
                         label: "Yearly Sales",
                         data: <?= json_encode($data_year) ?>,
-                        labels: <?= json_encode($labels_year) ?>,
-                        color: 'rgba(250, 112, 154, 0.8)',
-                        borderColor: 'rgba(250, 112, 154, 1)',
-                        type: 'bar'
+                        labels: <?= json_encode($labels_year) ?>
                     },
                     {
                         id: 'productChart',
                         label: "Units Sold",
                         data: <?= json_encode($product_data) ?>,
-                        labels: <?= json_encode($product_labels) ?>,
-                        color: 'rgba(118, 75, 162, 0.8)',
-                        borderColor: 'rgba(118, 75, 162, 1)',
-                        type: 'doughnut'
+                        labels: <?= json_encode($product_labels) ?>
                     }
                 ];
 
-                // Create enhanced charts
-                chartConfigs.forEach(config => {
-                    const ctx = document.getElementById(config.id).getContext('2d');
-
-                    // Create gradient for better visual appeal
-                    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                    gradient.addColorStop(0, config.color);
-                    gradient.addColorStop(1, config.color.replace('0.8', '0.2'));
-
-                    const chartOptions = {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: {
-                            duration: 1500,
-                            easing: 'easeInOutQuart'
+                chartData.forEach(cfg => {
+                    new Chart(document.getElementById(cfg.id), {
+                        type: 'bar',
+                        data: {
+                            labels: cfg.labels,
+                            datasets: [{
+                                label: cfg.label,
+                                data: cfg.data,
+                                backgroundColor: 'rgba(33, 199, 221, 0.7)'
+                            }]
                         },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top',
-                                labels: {
-                                    usePointStyle: true,
-                                    padding: 15,
-                                    font: {
-                                        size: 12,
-                                        weight: '500'
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return cfg.id === 'productChart' ? value : pesoFormat(value);
+                                        }
                                     }
                                 }
                             },
-                            tooltip: {
-                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                                titleColor: '#fff',
-                                bodyColor: '#fff',
-                                borderColor: config.borderColor,
-                                borderWidth: 1,
-                                cornerRadius: 6,
-                                displayColors: false,
-                                callbacks: {
-                                    label: function(context) {
-                                        return config.id === 'productChart' ?
-                                            context.label + ': ' + context.parsed + ' item' :
-                                            config.label + ': ' + pesoFormat(context.parsed.y || context.parsed);
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return cfg.id === 'productChart' ?
+                                                context.parsed.y + ' units' :
+                                                pesoFormat(context.parsed.y);
+                                        }
                                     }
                                 }
                             }
                         }
-                    };
-
-                    // Add scales for bar and line charts
-                    if (config.type === 'bar' || config.type === 'line') {
-                        chartOptions.scales = {
-                            x: {
-                                grid: {
-                                    display: false
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 11,
-                                        weight: '500'
-                                    }
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.05)'
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 11,
-                                        weight: '500'
-                                    },
-                                    callback: function(value) {
-                                        return config.id === 'productChart' ? value : pesoFormat(value);
-                                    }
-                                }
-                            }
-                        };
-                    }
-
-                    // Chart data based on type
-                    let chartData;
-                    if (config.type === 'doughnut') {
-                        chartData = {
-                            labels: config.labels,
-                            datasets: [{
-                                data: config.data,
-                                backgroundColor: [
-                                    '#667eea', '#764ba2', '#f093fb', '#f5576c',
-                                    '#4facfe', '#00f2fe', '#43e97b', '#38f9d7',
-                                    '#fa709a', '#fee140'
-                                ],
-                                borderWidth: 0,
-                                hoverOffset: 8
-                            }]
-                        };
-                    } else {
-                        chartData = {
-                            labels: config.labels,
-                            datasets: [{
-                                label: config.label,
-                                data: config.data,
-                                backgroundColor: config.type === 'line' ? gradient : gradient,
-                                borderColor: config.borderColor,
-                                borderWidth: config.type === 'line' ? 3 : 2,
-                                borderRadius: config.type === 'line' ? 0 : 4,
-                                borderSkipped: false,
-                                fill: config.type === 'line',
-                                tension: config.type === 'line' ? 0.4 : 0,
-                                pointBackgroundColor: config.type === 'line' ? config.borderColor : undefined,
-                                pointBorderColor: config.type === 'line' ? '#fff' : undefined,
-                                pointBorderWidth: config.type === 'line' ? 2 : undefined,
-                                pointRadius: config.type === 'line' ? 5 : undefined,
-                                pointHoverRadius: config.type === 'line' ? 7 : undefined
-                            }]
-                        };
-                    }
-
-                    new Chart(ctx, {
-                        type: config.type,
-                        data: chartData,
-                        options: chartOptions
                     });
                 });
             </script>
@@ -478,3 +387,10 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
 </body>
 
 </html>
+
+
+<!-- changes the design make it responsive ui
+
+
+add also dropdown
+Today's Sales, Yesterday's Sales, Weekly Sales = Product Sales Today, Monthly Sales Yearly Sales -->

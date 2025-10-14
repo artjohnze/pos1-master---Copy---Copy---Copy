@@ -17,7 +17,7 @@
                 echo $new;
                 ?>
              </a></li>
-           <li><a href="returns.php"><i class="icon-share icon-large"></i> Returns</a></li>
+
            <li><a href="../index.php">
                <font color="red"><i class="icon-off icon-large"></i></font> Log Out
              </a></li>

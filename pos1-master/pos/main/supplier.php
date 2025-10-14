@@ -21,6 +21,12 @@
         .sidebar-nav {
             padding: 9px 0;
         }
+
+        /* Make table headers non-interactive */
+        table th {
+            pointer-events: none;
+            cursor: default;
+        }
     </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
 
@@ -32,6 +38,8 @@
     <link href="src/facebox.css" media="screen" rel="stylesheet" type="text/css" />
     <script src="lib/jquery.js" type="text/javascript"></script>
     <script src="src/facebox.js" type="text/javascript"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             $('a[rel*=facebox]').facebox({
@@ -63,8 +71,6 @@ function createRandomPassword()
 $finalcode = '' . createRandomPassword();
 ?>
 
-
-
 <script language="javascript" type="text/javascript">
     /* Visit http://www.yaldex.com/ for full source code
 and get more free JavaScript, CSS and DHTML scripts! */
@@ -78,17 +84,31 @@ and get more free JavaScript, CSS and DHTML scripts! */
         timerRunning = false;
     }
 
+    // Seed from server time in Asia/Manila
+    var serverEpochMs = <?php echo round(microtime(true) * 1000); ?>; // PHP now() in ms
+    var serverTzOffsetMinutes = <?php echo (new DateTime('now', new DateTimeZone('Asia/Manila')))->getOffset() / 60; ?>; // +480
+    var clientBootEpochMs = Date.now();
+
+    function getManilaDateNow() {
+        var elapsed = Date.now() - clientBootEpochMs;
+        var approxServerNowMs = serverEpochMs + elapsed; // keeps in sync with server start time
+        var utc = new Date(approxServerNowMs);
+        return new Date(utc.getTime() + serverTzOffsetMinutes * 60000);
+    }
+
     function showtime() {
-        var now = new Date();
-        var hours = now.getHours();
-        var minutes = now.getMinutes();
-        var seconds = now.getSeconds()
+        var philippinesTime = getManilaDateNow();
+        var hours = philippinesTime.getHours();
+        var minutes = philippinesTime.getMinutes();
+        var seconds = philippinesTime.getSeconds()
         var timeValue = "" + ((hours > 12) ? hours - 12 : hours)
         if (timeValue == "0") timeValue = 12;
         timeValue += ((minutes < 10) ? ":0" : ":") + minutes
         timeValue += ((seconds < 10) ? ":0" : ":") + seconds
         timeValue += (hours >= 12) ? " P.M." : " A.M."
-        document.clock.face.value = timeValue;
+        if (document.clock && document.clock.face) {
+            document.clock.face.value = timeValue;
+        }
         timerID = setTimeout("showtime()", 1000);
         timerRunning = true;
     }
@@ -109,19 +129,23 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 <div class="well sidebar-nav">
                     <ul class="nav nav-list">
                         <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
-                        <li><a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><i
-                                    class="icon-shopping-cart icon-2x"></i> Sales</a> </li>
+                        <!-- <li><a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><i
+                                    class="icon-shopping-cart icon-2x"></i> Sales</a> </li> -->
                         <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a> </li>
                         <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>-->
                         <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li class="active"><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
+                        <!-- <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li> -->
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
+                        <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
                         <li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a>
                             <br><br><br><br><br><br>
                         <li>
                             <div class="hero-unit-clock">
-
+                                <form name="clock">
+                                    <input type="text" name="face" value="" style="border: none; background: transparent; font-size: 14px; text-align: center; width: 100%;" readonly>
+                                </form>
                             </div>
                         </li>
 
@@ -134,15 +158,14 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 <div class="contentheader">
                     <i class="icon-group"></i> Suppliers
                 </div>
-                <ul class="breadcrumb">
+                <br>
+                <!-- <ul class="breadcrumb">
                     <li><a href="index.php">Dashboard</a></li> /
                     <li class="active">Suppliers</li>
-                </ul>
+                </ul> -->
 
 
                 <div style="margin-top: -19px; margin-bottom: 21px;">
-                    <a href="index.php"><button class="btn btn-default btn-large" style="float: left;"><i
-                                class="icon icon-circle-arrow-left icon-large"></i> Back</button></a>
                     <?php
                     include('../connect.php');
                     $result = $db->prepare("SELECT * FROM supliers ORDER BY suplier_id DESC");
@@ -154,27 +177,23 @@ and get more free JavaScript, CSS and DHTML scripts! */
                             <?php echo $rowcount; ?></font>
                     </div>
                 </div>
-
                 <?php
                 // Pagination settings
                 $records_per_page = 10;
                 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
                 $offset = ($page - 1) * $records_per_page;
-
                 // Get total number of records
                 $total_result = $db->prepare("SELECT COUNT(*) FROM supliers");
                 $total_result->execute();
                 $total_records = $total_result->fetchColumn();
                 $total_pages = ceil($total_records / $records_per_page);
                 ?>
-
                 <input type="text" name="filter" style="height:35px; margin-top: -1px;" value="" id="filter"
                     placeholder="Search Supplier..." autocomplete="off" />
                 <a rel="facebox" href="addsupplier.php"><Button type="submit" class="btn btn-info"
                         style="float:right; width:230px; height:35px;" /><i class="icon-plus-sign icon-large"></i> Add
-                    Supplier</button></a><br><br>
-
-
+                    Supplier</button></a>
+                <br><br>
                 <table class="table table-bordered" id="resultTable" data-responsive="table" style="text-align: left;">
                     <thead>
                         <tr>
@@ -186,7 +205,6 @@ and get more free JavaScript, CSS and DHTML scripts! */
                         </tr>
                     </thead>
                     <tbody>
-
                         <?php
                         include('../connect.php');
                         $result = $db->prepare("SELECT * FROM supliers ORDER BY suplier_id DESC LIMIT :limit OFFSET :offset");
@@ -200,9 +218,11 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                 <td><?php echo $row['suplier_address']; ?></td>
                                 <td><?php echo $row['suplier_contact']; ?></td>
                                 <td><?php echo $row['note']; ?></td>
-                                <td><a rel="facebox" href="editsupplier.php?id=<?php echo $row['suplier_id']; ?>"><button
+                                <td>
+                                    <a rel="facebox" href="editsupplier.php?id=<?php echo $row['suplier_id']; ?>"><button
                                             class="btn btn-warning btn-mini"><i></i>Update </button></a>
-
+                                    &nbsp;
+                                    <a href="#" class="btn btn-danger btn-mini" onclick="deleteSupplier(<?php echo $row['suplier_id']; ?>)">Delete</a>
                                 </td>
                             </tr>
                         <?php
@@ -249,8 +269,26 @@ and get more free JavaScript, CSS and DHTML scripts! */
     </div>
 
     <script src="js/jquery.js"></script>
+    <script>
+        function deleteSupplier(supplierId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to delete script
+                    window.location.href = 'deletesupplier.php?id=' + supplierId;
+                }
+            });
+        }
+    </script>
     <?php include('footer.php'); ?>
 </body>
-<?php include('footer.php'); ?>
 
 </html>

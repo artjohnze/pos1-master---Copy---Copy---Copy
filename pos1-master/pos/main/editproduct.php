@@ -22,7 +22,7 @@ for ($i = 0; $row = $result->fetch(); $i++) {
 			<span>Description : </span><input type="text" style="width:265px; height:30px;" name="name" value="<?php echo $row['product_name']; ?>" /><br>
 			<span>Expiry Date : </span><input type="date" style="width:265px; height:30px;" name="exdate" value="<?php echo $row['expiry_date']; ?>" /><br>
 			<span>Selling Price : </span><input type="text" style="width:265px; height:30px;" id="txt1" name="price" value="<?php echo $row['price']; ?>" Required /><br>
-			<span>Original Price : </span><input type="text" style="width:265px; height:30px;" id="txt2" name="o_price" value="<?php echo $row['o_price']; ?>" Required /><br>
+
 			<span>Supplier : </span>
 			<select name="supplier" style="width:265px; height:30px; margin-left:-5px;">
 				<option><?php echo $row['supplier']; ?></option>
@@ -41,14 +41,14 @@ for ($i = 0; $row = $result->fetch(); $i++) {
 
 			<!-- Add Stock Section -->
 			<div style="background: #f0f8ff; padding: 15px; margin: 10px 0; border: 1px solid #007bff; border-radius: 5px;">
-				<strong style="color: #007bff;">📦 Add Stock</strong><br><br>
+				<strong style="color: #007bff;"> Add Stock</strong><br><br>
 				<span>Add Quantity: </span>
 				<input type="number" style="width:100px; height:30px; margin-right: 10px;" id="add_qty" min="1" placeholder="0" />
 				<button type="button" onclick="addToStock()" style="background: #28a745; color: white; padding: 5px 15px; border: none; border-radius: 3px; cursor: pointer;">
-					➕ Add to Stock
+					Add to Stock
 				</button>
 				<br><br>
-				<small style="color: #666;">Enter quantity to add to current stock. This will update the Current Stock field above.</small>
+
 			</div>
 
 			<div style="float:right; margin-right:10px;">
