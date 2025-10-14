@@ -129,13 +129,21 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 <div class="well sidebar-nav">
                     <ul class="nav nav-list">
                         <li><a href="index.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
+<<<<<<< HEAD
                         <!-- <li><a href="sales.php?id=cash&invoice=<?php echo $finalcode ?>"><i
+=======
+                        <!-- <li><a href="sales.php?id=cash&invoice=?php echo $finalcode ?>"><i
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                                     class="icon-shopping-cart icon-2x"></i> Sales</a> </li> -->
                         <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a> </li>
                         <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>-->
                         <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li class="active"><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
+<<<<<<< HEAD
                         <!-- <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li> -->
+=======
+                        <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
                         <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
@@ -190,9 +198,12 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 ?>
                 <input type="text" name="filter" style="height:35px; margin-top: -1px;" value="" id="filter"
                     placeholder="Search Supplier..." autocomplete="off" />
+<<<<<<< HEAD
                 <a rel="facebox" href="addsupplier.php"><Button type="submit" class="btn btn-info"
                         style="float:right; width:230px; height:35px;" /><i class="icon-plus-sign icon-large"></i> Add
                     Supplier</button></a>
+=======
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                 <br><br>
                 <table class="table table-bordered" id="resultTable" data-responsive="table" style="text-align: left;">
                     <thead>
@@ -222,7 +233,11 @@ and get more free JavaScript, CSS and DHTML scripts! */
                                     <a rel="facebox" href="editsupplier.php?id=<?php echo $row['suplier_id']; ?>"><button
                                             class="btn btn-warning btn-mini"><i></i>Update </button></a>
                                     &nbsp;
+<<<<<<< HEAD
                                     <a href="#" class="btn btn-danger btn-mini" onclick="deleteSupplier(<?php echo $row['suplier_id']; ?>)">Delete</a>
+=======
+                                    <a href="supplier_deliveries.php?name=<?php echo urlencode($row['suplier_name']); ?>" class="btn btn-info btn-mini">View Deliveries</a>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                                 </td>
                             </tr>
                         <?php

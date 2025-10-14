@@ -1,7 +1,10 @@
 <?php
+<<<<<<< HEAD
 // Start session and authentication first
 require_once('auth.php');
 
+=======
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
 // DB connection
 $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
 ?>
@@ -25,6 +28,44 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
     <script src="src/facebox.js"></script>
     <script src="chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<<<<<<< HEAD
+=======
+    <style>
+        .row-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .col-card {
+            flex: 1;
+            min-width: 400px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+        }
+
+        h3 {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+    </style>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
     <style>
         body {
             background-color: #f8f9fa;
@@ -101,12 +142,16 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
             }
         }
     </style>
+<<<<<<< HEAD
 
     <style>
         .sidebar-nav {
             padding: 9px 0;
         }
     </style>
+=======
+    <?php require_once('auth.php'); ?>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
     <?php
     function createRandomPassword()
     {
@@ -147,7 +192,11 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                         <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a></li>-->
                         <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a></li>
+<<<<<<< HEAD
                         <!-- <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li> -->
+=======
+                        <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
@@ -239,7 +288,11 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Daily -->
                 <div class="col-card">
                     <div class="card">
+<<<<<<< HEAD
                         <h2>📅 Today's Sales</h2>
+=======
+                        <h3>📅 Today's Sales</h3>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <div class="chart-container"><canvas id="dailyChart"></canvas></div>
                     </div>
                 </div>
@@ -247,7 +300,11 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Yesterday -->
                 <div class="col-card">
                     <div class="card">
+<<<<<<< HEAD
                         <h2>🕒 Yesterday's Sales</h2>
+=======
+                        <h3>🕒 Yesterday's Sales</h3>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <div class="chart-container"><canvas id="yesterdayChart"></canvas></div>
                     </div>
                 </div>
@@ -255,7 +312,11 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Weekly -->
                 <div class="col-card">
                     <div class="card">
+<<<<<<< HEAD
                         <h2>📅 Weekly Sales</h2>
+=======
+                        <h3>📅 Weekly Sales</h3>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <div class="chart-container"><canvas id="weeklyChart"></canvas></div>
                     </div>
                 </div>
@@ -263,7 +324,11 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Monthly -->
                 <div class="col-card">
                     <div class="card">
+<<<<<<< HEAD
                         <h2>🗓 Monthly Sales</h2>
+=======
+                        <h3>🗓 Monthly Sales</h3>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <div class="chart-container"><canvas id="monthlyChart"></canvas></div>
                     </div>
                 </div>
@@ -271,7 +336,11 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Yearly -->
                 <div class="col-card">
                     <div class="card">
+<<<<<<< HEAD
                         <h2>📆 Yearly Sales</h2>
+=======
+                        <h3>📆 Yearly Sales</h3>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <div class="chart-container"><canvas id="yearlyChart"></canvas></div>
                     </div>
                 </div>
@@ -279,7 +348,11 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                 <!-- Product Sales -->
                 <div class="col-card">
                     <div class="card">
+<<<<<<< HEAD
                         <h2>📦 Product Sales Today</h2>
+=======
+                        <h3>📦 Product Sales Today</h3>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <div class="chart-container"><canvas id="productChart"></canvas></div>
                     </div>
                 </div>
@@ -287,11 +360,16 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
             </div>
 
             <script>
+<<<<<<< HEAD
                 // Helper function
+=======
+                // Helper
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                 function pesoFormat(value) {
                     return '₱' + new Intl.NumberFormat('en-PH').format(value);
                 }
 
+<<<<<<< HEAD
                 // Enhanced chart configurations with better styling
                 const chartConfigs = [{
                         id: 'dailyChart',
@@ -301,47 +379,72 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
                         color: 'rgba(102, 126, 234, 0.8)',
                         borderColor: 'rgba(102, 126, 234, 1)',
                         type: 'bar'
+=======
+                // Chart configs
+                const chartData = [{
+                        id: 'dailyChart',
+                        label: "Today's Sales",
+                        data: <?= json_encode($data_day) ?>,
+                        labels: <?= json_encode($labels_day) ?>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                     },
                     {
                         id: 'yesterdayChart',
                         label: "Yesterday's Sales",
                         data: <?= json_encode($data_yesterday) ?>,
+<<<<<<< HEAD
                         labels: <?= json_encode($labels_yesterday) ?>,
                         color: 'rgba(240, 147, 251, 0.8)',
                         borderColor: 'rgba(240, 147, 251, 1)',
                         type: 'bar'
+=======
+                        labels: <?= json_encode($labels_yesterday) ?>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                     },
                     {
                         id: 'weeklyChart',
                         label: "Weekly Sales",
                         data: <?= json_encode($data_week) ?>,
+<<<<<<< HEAD
                         labels: <?= json_encode($labels_week) ?>,
                         color: 'rgba(79, 172, 254, 0.8)',
                         borderColor: 'rgba(79, 172, 254, 1)',
                         type: 'bar'
+=======
+                        labels: <?= json_encode($labels_week) ?>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                     },
                     {
                         id: 'monthlyChart',
                         label: "Monthly Sales",
                         data: <?= json_encode($month_data) ?>,
+<<<<<<< HEAD
                         labels: <?= json_encode($month_labels) ?>,
                         color: 'rgba(67, 233, 123, 0.8)',
                         borderColor: 'rgba(67, 233, 123, 1)',
                         type: 'bar'
+=======
+                        labels: <?= json_encode($month_labels) ?>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                     },
                     {
                         id: 'yearlyChart',
                         label: "Yearly Sales",
                         data: <?= json_encode($data_year) ?>,
+<<<<<<< HEAD
                         labels: <?= json_encode($labels_year) ?>,
                         color: 'rgba(250, 112, 154, 0.8)',
                         borderColor: 'rgba(250, 112, 154, 1)',
                         type: 'bar'
+=======
+                        labels: <?= json_encode($labels_year) ?>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                     },
                     {
                         id: 'productChart',
                         label: "Units Sold",
                         data: <?= json_encode($product_data) ?>,
+<<<<<<< HEAD
                         labels: <?= json_encode($product_labels) ?>,
                         color: 'rgba(118, 75, 162, 0.8)',
                         borderColor: 'rgba(118, 75, 162, 1)',
@@ -476,5 +579,58 @@ $pdo = new PDO("mysql:host=localhost;dbname=sales;charset=utf8", "root", "");
             </script>
 
 </body>
+=======
+                        labels: <?= json_encode($product_labels) ?>
+                    }
+                ];
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
+
+                chartData.forEach(cfg => {
+                    new Chart(document.getElementById(cfg.id), {
+                        type: 'bar',
+                        data: {
+                            labels: cfg.labels,
+                            datasets: [{
+                                label: cfg.label,
+                                data: cfg.data,
+                                backgroundColor: 'rgba(33, 199, 221, 0.7)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return cfg.id === 'productChart' ? value : pesoFormat(value);
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return cfg.id === 'productChart' ?
+                                                context.parsed.y + ' units' :
+                                                pesoFormat(context.parsed.y);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+            </script>
+
+</body>
 
 </html>
+
+
+<!-- changes the design make it responsive ui
+
+
+add also dropdown
+Today's Sales, Yesterday's Sales, Weekly Sales = Product Sales Today, Monthly Sales Yearly Sales -->

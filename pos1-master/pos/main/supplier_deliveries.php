@@ -7,12 +7,15 @@ $supplier = isset($_GET['name']) ? trim($_GET['name']) : '';
 $from = isset($_GET['from']) ? trim($_GET['from']) : '';
 $to = isset($_GET['to']) ? trim($_GET['to']) : '';
 
+<<<<<<< HEAD
 // Pagination settings
 $rows_per_page = 10;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $current_page = max(1, $current_page); // Ensure page is at least 1
 $offset = ($current_page - 1) * $rows_per_page;
 
+=======
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
 // If no supplier provided and user is admin, show pending supplier submissions
 if ($supplier === '' && isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_USER_ROLE'] === 'admin') {
     // ensure table exists
@@ -20,6 +23,7 @@ if ($supplier === '' && isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_US
         id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         supplier VARCHAR(200) NOT NULL,
         product_code VARCHAR(200) NOT NULL,
+<<<<<<< HEAD
         gen_name VARCHAR(200) DEFAULT NULL,
         product_name VARCHAR(255) NOT NULL,
         qty INT(11) NOT NULL,
@@ -39,6 +43,17 @@ if ($supplier === '' && isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_US
     $stmt = $db->prepare('SELECT * FROM supplier_deliveries WHERE status = "pending" ORDER BY submitted_at DESC LIMIT :limit OFFSET :offset');
     $stmt->bindValue(':limit', $rows_per_page, PDO::PARAM_INT);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+=======
+        product_name VARCHAR(255) NOT NULL,
+        qty INT(11) NOT NULL,
+        price VARCHAR(100) NULL,
+        expiry_date VARCHAR(100) NULL,
+        status ENUM('pending','accepted','rejected') DEFAULT 'pending',
+        submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
+    $stmt = $db->prepare('SELECT * FROM supplier_deliveries WHERE status = "pending" ORDER BY submitted_at DESC');
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
     $stmt->execute();
     $pending = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
@@ -73,6 +88,7 @@ if ($supplier === '' && isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_US
         id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         supplier VARCHAR(200) NOT NULL,
         product_code VARCHAR(200) NOT NULL,
+<<<<<<< HEAD
         gen_name VARCHAR(200) DEFAULT NULL,
         product_name VARCHAR(255) NOT NULL,
         qty INT(11) NOT NULL,
@@ -92,6 +108,17 @@ if ($supplier === '' && isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_US
     $sstmt->bindValue(':limit', $rows_per_page, PDO::PARAM_INT);
     $sstmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $sstmt->execute();
+=======
+        product_name VARCHAR(255) NOT NULL,
+        qty INT(11) NOT NULL,
+        price VARCHAR(100) NULL,
+        expiry_date VARCHAR(100) NULL,
+        status ENUM('pending','accepted','rejected') DEFAULT 'pending',
+        submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+    $sstmt = $db->prepare('SELECT * FROM supplier_deliveries WHERE supplier = :s ORDER BY submitted_at DESC');
+    $sstmt->execute([':s' => $supplier]);
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
     $supplier_submissions = $sstmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
@@ -365,6 +392,7 @@ if ($supplier === '' && isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_US
                         <br>
 
 
+<<<<<<< HEAD
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -384,6 +412,23 @@ if ($supplier === '' && isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_US
                                         </td>
                                     </tr>
                                 <?php else: ?>
+=======
+                        <?php if (empty($pending)): ?>
+                            <div class="alert alert-warning">No pending supplier submissions.</div>
+                        <?php else: ?>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Supplier</th>
+                                        <th>Product Details</th>
+                                        <th>Quantity</th>
+                                        <th>Expiry Date</th>
+                                        <th>Submission Time</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                                     <?php foreach ($pending as $p): ?>
                                         <tr>
                                             <td class="supplier-name" style="text-align: center;">
@@ -430,6 +475,7 @@ if ($supplier === '' && isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_US
 
                                         </tr>
                                     <?php endforeach; ?>
+<<<<<<< HEAD
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -472,6 +518,10 @@ if ($supplier === '' && isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_US
                                     <?php endif; ?>
                                 </ul>
                             </div>
+=======
+                                </tbody>
+                            </table>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <?php endif; ?>
 
                     <?php else: ?>
@@ -513,6 +563,7 @@ if ($supplier === '' && isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_US
                         <?php endif; ?>
 
                         <h4>Products</h4>
+<<<<<<< HEAD
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -593,6 +644,35 @@ if ($supplier === '' && isset($_SESSION['SESS_USER_ROLE']) && $_SESSION['SESS_US
                                     <?php endif; ?>
                                 </ul>
                             </div>
+=======
+                        <?php if (empty($supplier_submissions)): ?>
+
+                        <?php else: ?>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Product Code</th>
+                                        <th>Product Name</th>
+                                        <th>Qty</th>
+                                        <th>Expiry</th>
+                                        <th>Status</th>
+                                        <th>Submitted</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($supplier_submissions as $s): ?>
+                                        <tr>
+                                            <td style="text-align:center;"><?php echo htmlspecialchars($s['product_code']); ?></td>
+                                            <td style="text-align:center;"><?php echo htmlspecialchars($s['product_name']); ?></td>
+                                            <td style="text-align:center;"><?php echo (int)$s['qty']; ?></td>
+                                            <td style="text-align:center;"><?php echo htmlspecialchars($s['expiry_date']); ?></td>
+                                            <td style="text-align:center;"><?php echo htmlspecialchars($s['status']); ?></td>
+                                            <td style="text-align:center;"><?php echo htmlspecialchars($s['submitted_at']); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <?php endif; ?>
                     <?php endif; ?>
                 </div>

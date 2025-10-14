@@ -265,7 +265,11 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                             <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a></li>
                             <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                             <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a></li>
+<<<<<<< HEAD
                             <!-- <a href="supplier_deliveries.php?name=?php echo urlencode($row['suplier_name']); ?>" class="btn btn-info btn-mini">View Deliveries</a> -->
+=======
+                            <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                             <li class="active"><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
                             <li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a></li>
                         </ul>
@@ -306,7 +310,11 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                                     <select name="position" id="position" required>
                                         <option value="admin">Admin</option>
                                         <option value="cashier">Cashier</option>
+<<<<<<< HEAD
 
+=======
+                                        <option value="supplier">Supplier</option>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                                     </select>
                                 </td>
                             </tr>

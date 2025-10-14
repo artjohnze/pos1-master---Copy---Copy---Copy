@@ -74,7 +74,11 @@ require_once('auth.php');
                         <li><a href="products.php"><i class="icon-list-alt icon-2x"></i> Products</a></li>
                         <li class="active"><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a></li>
+<<<<<<< HEAD
                         <!-- <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li> -->
+=======
+                        <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
                         <li><a href="sales_inventory.php"><i class="icon-table icon-2x"></i> Product Inventory</a></li>
                     </ul>

@@ -104,8 +104,6 @@ $finalcode = '' . createRandomPassword();
 
     }
 </script>
-
-
 <script language="javascript" type="text/javascript">
     /* Visit http://www.yaldex.com/ for full source code
 and get more free JavaScript, CSS and DHTML scripts! */
@@ -157,7 +155,11 @@ and get more free JavaScript, CSS and DHTML scripts! */
                         <!--                        <li><a href="customer.php"><i class="icon-group icon-2x"></i> Customers</a> </li>-->
                         <li><a href="returns.php"><i class="icon-share icon-2x"></i> Returns</a></li>
                         <li><a href="supplier.php"><i class="icon-group icon-2x"></i> Suppliers</a> </li>
+<<<<<<< HEAD
                         <!-- <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li> -->
+=======
+                        <li><a href="supplier_deliveries.php"><i class="icon-truck icon-2x"></i> Supplier Deliveries</a></li>
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                         <li><a href="user_roles.php"><i class="icon-user icon-2x"></i> User Roles</a></li>
                         <!-- <li><a href="salesreport.php?d1=0&d2=0"><i class="icon-bar-chart icon-2x"></i> Sales Report</a> -->
                         </li>
@@ -165,9 +167,12 @@ and get more free JavaScript, CSS and DHTML scripts! */
                             <br><br><br><br><br><br>
                         <li>
                             <div class="hero-unit-clock">
+<<<<<<< HEAD
                                 <form name="clock">
                                     <input type="text" name="face" value="" style="border: none; background: transparent; font-size: 14px; text-align: center; width: 100%;" readonly>
                                 </form>
+=======
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                             </div>
                         </li>
 
@@ -212,9 +217,12 @@ and get more free JavaScript, CSS and DHTML scripts! */
                 ?>
                 <input type="text" style="padding:15px;" name="filter" value="" id="filter"
                     placeholder="Search Product..." autocomplete="off" />
+<<<<<<< HEAD
                 <a rel="facebox" href="addproduct.php"><button type="submit" class="btn btn-info"
                         style="float:right; width:230px; height:35px;"><i class="icon-plus-sign icon-large"></i> Add
                         Product</button></a>
+=======
+>>>>>>> 7afa611c0227699da662c76ad192913c471abc9f
                 <br><br>
                 <table class="table table-bordered" id="resultTable" data-responsive="table" style="text-align: left;">
                     <thead>
